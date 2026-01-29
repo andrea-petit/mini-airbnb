@@ -16,7 +16,8 @@ if (empty($_SESSION['csrf_token'])) {
         <div class="title_logo">
             <div class="auth-header">
                 <img src="../public/img/LogoWind.png" alt="Logo de WindBnB">
-                <h2>WindBnB</h2>
+                <h2>
+                    <span style="color: #1C726E;">Wind</span>BnB</h2>
             </div>
         </div>
         
@@ -39,7 +40,7 @@ if (empty($_SESSION['csrf_token'])) {
                 </div>
             <?php endif; ?>
 
-            <h3 style="font-size: 22px; font-weight: 500; margin-bottom: 24px; color: #222;">Iniciar sesión o registrarse</h3>
+            <h3>Iniciar sesión o registrarse</h3>
 
             <form action="../actions/user_actions.php?action=login" method="POST">
                 <div class="form-group">

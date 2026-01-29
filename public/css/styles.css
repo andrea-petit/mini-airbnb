@@ -1,7 +1,9 @@
+@import url("https://fonts.googleapis.com/css2?family=Anton&family=Lobster&family=Pacifico&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+
 /* Airbnb Design System Variables */
 :root {
-  --airbnb-red: #ff385c;
-  --airbnb-red-hover: #d90b3e;
+  --airbnb-turquoise: #1c726e;
+  --airbnb-turquoise-hover: #114675;
   --text-primary: #222222;
   --text-secondary: #717171;
   --bg-light: #ffffff;
@@ -72,15 +74,14 @@ a:hover {
 
 /* Header inside card */
 .auth-header {
-  padding: 16px 24px;
+  padding: 10px 160px;
   border-bottom: 1px solid var(--border-color);
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 6px;
+  gap: 0px;
   min-height: 64px;
 }
-
 .auth-header img {
   height: 100px;
   width: auto;
@@ -91,11 +92,37 @@ a:hover {
   margin: 0;
   font-size: 36px;
   font-weight: 700;
+  font-family: "Pacifico", cursive;
+}
+
+.auth-header-reg {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 64px;
+}
+
+.auth-header-reg h2 {
+  margin: 0;
+  font-size: 36px;
+  font-weight: 600;
+  font-family: "Pacifico", cursive;
 }
 
 /* Form Container */
 .auth-body {
   padding: 24px;
+}
+
+.auth-body h3 {
+  font-size: 22px;
+  font-weight: 500;
+  font-family: "anton", sans-serif;
+  margin-bottom: 24px;
+  color: #222;
 }
 
 /* Form Elements */
@@ -106,7 +133,7 @@ a:hover {
 
 label {
   display: block;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--text-secondary);
   margin-bottom: 4px;
@@ -132,15 +159,27 @@ select {
 input:focus,
 select:focus {
   outline: none;
-  border-color: var(--text-primary);
-  box-shadow: 0 0 0 2px var(--text-primary);
+  border-color: var(--airbnb-turquoise);
+  box-shadow: 0 0 0 2px var(--airbnb-turquoise);
+}
+
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23717171%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13.2-5.4H18.4c-5%200-9.3%201.8-13.2%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2013.2l128%20127.9c3.9%203.9%209.2%205.9%2013.2%205.9s9.2-2%2013.2-5.9L287%2095.4c3.7-3.9%205.5-8.3%205.5-13.2%200-4.9-1.8-9.4-5.5-13.2z%22%2F%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px;
+}
+
+select:focus {
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%231c726e%22%20transform%3D%22rotate(180%20146.2%20146.2)%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13.2-5.4H18.4c-5%200-9.3%201.8-13.2%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2013.2l128%20127.9c3.9%203.9%209.2%205.9%2013.2%205.9s9.2-2%2013.2-5.9L287%2095.4c3.7-3.9%205.5-8.3%205.5-13.2%200-4.9-1.8-9.4-5.5-13.2z%22%2F%3E%3C%2Fsvg%3E");
 }
 
 /* Button */
 .btn,
 button[type="submit"] {
   width: 100%;
-  background: linear-gradient(to right, #e61e4d 0%, #e31c5f 50%, #d80565 100%);
+  background: linear-gradient(to right, #298580 0%, #1a746f 50%, #076964 100%);
   color: white;
   font-size: 16px;
   font-weight: 600;
@@ -156,7 +195,7 @@ button[type="submit"] {
 
 .btn:hover,
 button[type="submit"]:hover {
-  opacity: 0.95;
+  opacity: 0.9;
 }
 
 .btn:active,
@@ -166,7 +205,7 @@ button[type="submit"]:active {
 
 /* Utilities & Validation Messages */
 p {
-  margin-bottom: 16px;
+  margin-bottom: 5px;
   font-size: 14px;
   text-align: center;
 }
@@ -197,7 +236,7 @@ p {
 .divider {
   display: flex;
   align-items: center;
-  margin: 24px 0;
+  margin: 12px 0;
   font-size: 12px;
   color: var(--text-secondary);
 }
@@ -222,6 +261,6 @@ p {
 
 /* Flatpickr overrides for other pages (keeping purely for compatibility if used elsewhere) */
 .flatpickr-day.selected {
-  background: var(--airbnb-red) !important;
-  border-color: var(--airbnb-red) !important;
+  background: var(--airbnb-turquoise) !important;
+  border-color: var(--airbnb-turquoise) !important;
 }
