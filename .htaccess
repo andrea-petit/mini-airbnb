@@ -4,7 +4,7 @@ RewriteEngine On
 RewriteCond %{REQUEST_METHOD} !POST
 RewriteRule ^(config|models|controllers) - [F,L]
 
-RedirectMatch 301 ^/airbnb/?$ /airbnb/views/templates/login.php
+RedirectMatch 301 ^/airbnb?$ /airbnb/views/login.php
 
 ErrorDocument 403 /airbnb/public/templates/403.php
 
