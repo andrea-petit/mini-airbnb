@@ -1,0 +1,16 @@
+Options -Indexes
+
+RewriteEngine On
+RewriteCond %{REQUEST_METHOD} !POST
+RewriteRule ^(config|models|controllers) - [F,L]
+
+RedirectMatch 301 ^/airbnb/?$ /airbnb/views/templates/login.php
+
+ErrorDocument 403 /airbnb/public/templates/403.php
+
+ErrorDocument 404 /airbnb/public/templates/404.php
+
+ErrorDocument 500 /airbnb/public/templates/500.php
+
+
+

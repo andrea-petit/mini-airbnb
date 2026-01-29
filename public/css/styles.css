@@ -1,0 +1,20 @@
+        .flatpickr-day.flatpickr-disabled {
+            background: #ffdede;
+            color: #a60000;
+            border-radius: 6px !important;
+        }
+        .flatpickr-day.flatpickr-disabled:hover {
+            cursor: not-allowed !important;
+        }
+        .flatpickr-day.selected,
+        .flatpickr-day.startRange,
+        .flatpickr-day.endRange {
+            background: #3aa600 !important;
+            color: #ffffff !important;
+            box-shadow: none !important;
+            border-radius: 6px !important;
+        }
+        .flatpickr-day.inRange {
+            background: #e6f9db !important; 
+            color: #0b6b00 !important;
+        }

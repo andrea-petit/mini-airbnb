@@ -1,0 +1,4 @@
+-> arreglar el calendario
+-> verificar inputs
+-> agregar notificaciones para todos los mensajes error/exito
+-> mas datos en el login para conectar con api de whastapp
