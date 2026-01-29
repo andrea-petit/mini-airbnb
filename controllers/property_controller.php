@@ -23,28 +23,45 @@ class PropertyController{
         }   
     }
 
-    public function agregar_propiedad($titulo, $descripcion, $precio, $ubicacion, $archivo_foto, $capacidad){
+    public function agregar_propiedad($titulo, $descripcion, $precio, $ubicacion, $archivo_foto = null, $capacidad) {
         $id_usuario = $this->chequear_id();
         
-        $nombre_foto = "default.jpg"; 
-        
-        if (isset($archivo_foto) && $archivo_foto['error'] === 0) {
+        // Procesamiento de imagen
+        $imagen_url = null;
+        if ($archivo_foto && isset($archivo_foto['error']) && $archivo_foto['error'] === 0) {
             $extension = pathinfo($archivo_foto['name'], PATHINFO_EXTENSION);
             $nombre_foto = time() . "_" . uniqid() . "." . $extension;
             $ruta_destino = __DIR__ . "/../public/uploads/" . $nombre_foto;
-            
-            move_uploaded_file($archivo_foto['tmp_name'], $ruta_destino);
+            if (move_uploaded_file($archivo_foto['tmp_name'], $ruta_destino)) {
+                $imagen_url = $nombre_foto;
+            }
         }
 
-        $precio = floatval($precio); 
+        // CAMBIO CLAVE: Capturamos el ID que retorna el modelo (lastInsertId)
+        $id_nueva_propiedad = $this->modelo->agregar_propiedad($titulo, $descripcion, $precio, $ubicacion, $id_usuario, $imagen_url, $capacidad);
 
-        $nueva_propiedad= $this->modelo->agregar_propiedad($titulo, $descripcion, $precio, $ubicacion, $id_usuario, $nombre_foto, $capacidad);
-    
-        if($nueva_propiedad){
-            header("Location: ../public/index.php?success=propiedad_agregada");
+        if ($id_nueva_propiedad) {
+            // REDIRECCIÓN DINÁMICA: Enviamos al formulario de edición con el ID recién creado
+            // Esto desbloquea automáticamente el formulario de comodidades
+            header("Location: ../views/formulario_propiedad.php?id=" . $id_nueva_propiedad . "&step=2&success=datos_guardados");
             exit();
-        }else{
-            header("Location: ../public/index.php?error=error_agregando");
+        } else {
+            header("Location: ../views/formulario_propiedad.php?error=error_agregando");
+            exit();
+        }
+    }
+
+    public function agregar_comodidades($id_propiedad, $comodidades) {
+        // Validamos que vengan comodidades (si no viene ninguna, pasamos un array vacío)
+        $comodidades = $comodidades ?? [];
+        $agregado = $this->modelo->agregar_comodidades($id_propiedad, $comodidades);
+
+        if ($agregado) {
+            // Ahora que terminó ambos pasos, al index
+            header("Location: ../public/index.php?success=propiedad_publicada_completa");
+            exit();
+        } else {
+            header("Location: ../views/formulario_propiedad.php?id=$id_propiedad&error=error_comodidades");
             exit();
         }
     }
@@ -62,27 +79,40 @@ class PropertyController{
         }
     }
 
-    public function actualizar_propiedad($id_propiedad, $titulo, $descripcion, $precio, $ubicacion, $archivo_foto = null){
+    public function actualizar_propiedad($id_propiedad, $titulo, $descripcion, $precio, $ubicacion, $archivo_foto = null) {
         $id_usuario = $this->chequear_id();
-        $precio = floatval($precio);
-
+        
+        // Lógica para mantener la imagen anterior si no se sube una nueva
         $imagen_url = null;
         if ($archivo_foto && isset($archivo_foto['error']) && $archivo_foto['error'] === 0) {
             $extension = pathinfo($archivo_foto['name'], PATHINFO_EXTENSION);
             $nombre_foto = time() . "_" . uniqid() . "." . $extension;
             $ruta_destino = __DIR__ . "/../public/uploads/" . $nombre_foto;
-            if (move_uploaded_file($archivo_foto['tmp_name'], $ruta_destino)) {
-                $imagen_url = $nombre_foto;
-            }
+            move_uploaded_file($archivo_foto['tmp_name'], $ruta_destino);
+            $imagen_url = $nombre_foto;
         }
 
-        $actualizado= $this->modelo->actualizar_propiedad($id_propiedad, $titulo, $descripcion, $precio, $ubicacion, $imagen_url, $id_usuario);
+        $actualizado = $this->modelo->actualizar_propiedad($id_propiedad, $titulo, $descripcion, $precio, $ubicacion, $imagen_url, $id_usuario);
 
-        if($actualizado){
-            header("Location: ../public/index.php?success=propiedad_actualizada");
+        if ($actualizado) {
+            // En edición, nos quedamos en la misma página para confirmar el cambio
+            header("Location: ../public/index.php?success=datos_actualizados");
             exit();
-        }else{
-            header("Location: ../public/index.php?error=error_actualizando");
+        } else {
+            header("Location: ../views/formulario_propiedad.php?id=$id_propiedad&error=error_actualizando");
+            exit();
+        }
+    }
+
+    public function actualizar_comodidades($id_propiedad, $comodidades) {
+        $comodidades = $comodidades ?? [];
+        $actualizado = $this->modelo->actualizar_comodidades($id_propiedad, $comodidades);
+
+        if ($actualizado) {
+            header("Location: ../public/index.php?success=comodidades_actualizadas");
+            exit();
+        } else {
+            header("Location: ../views/formulario_propiedad.php?id=$id_propiedad&error=error_actualizando_comodidades");
             exit();
         }
     }
@@ -94,6 +124,15 @@ class PropertyController{
             die("Error al obtener propiedad: " . $e->getMessage());
         }
  
+    }
+
+    public function obtener_comodidades_por_propiedad($id_propiedad){
+        try{
+            return $this->modelo->obtener_comodidades_por_propiedad($id_propiedad);
+        }catch(Exception $e){
+            die("Error al obtener comodidades: " . $e->getMessage());
+        }
+        
     }
 
     public function buscar_propiedades($criterio){

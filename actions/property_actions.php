@@ -24,8 +24,14 @@ switch($action){
     case 'actualizar':
         $controller->actualizar_propiedad($_POST['id_propiedad'], $_POST['titulo'], $_POST['descripcion'], $_POST['precio'],  $_POST['ubicacion'], $_FILES['foto'],);
         break;
+    case 'actualizar_comodidades':
+        $controller->actualizar_comodidades($_POST['id_propiedad'], $_POST['comodidades']);
+        break;
+    case 'agregar_comodidades':
+        $controller->agregar_comodidades($_POST['id_propiedad'], $_POST['comodidades']);
+        break;
     default:
-        header("Location: ../index.php");
+        header("Location: ../public/index.php");
         exit();
 }
 
