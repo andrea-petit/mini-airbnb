@@ -38,7 +38,7 @@ class ReservaController{
 
             $propModel = new Property($this->pdo); 
             $propiedad = $propModel->obtener_propiedad_por_id($id_propiedad);
-            $precio_noche = $propiedad['precio'];
+            $precio_noche = $propiedad['precio_noche'];
 
             $f1 = new DateTime($fecha_inicio);
             $f2 = new DateTime($fecha_fin);
@@ -55,6 +55,21 @@ class ReservaController{
 
             if(empty($fecha_inicio) || empty($fecha_fin) || $cant_huespedes <= 0){
                 header("Location: ../views/detalle_propiedad.php?id=$id_propiedad&error=campos_vacios");
+                exit();
+            }
+
+            if($cant_huespedes > $propiedad['capacidad']){
+                header("Location: ../views/detalle_propiedad.php?id=$id_propiedad&error=excede_capacidad");
+                exit();
+            }
+
+            if($noches > 30 or $noches < 1){
+                header("Location: ../views/detalle_propiedad.php?id=$id_propiedad&error=noches_invalidas");
+                exit();
+            }
+
+            if($fecha_inicio < date('Y-m-d')){
+                header("Location: ../views/detalle_propiedad.php?id=$id_propiedad&error=fecha_inicio_pasada");
                 exit();
             }
             
