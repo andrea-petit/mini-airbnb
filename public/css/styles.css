@@ -1,20 +1,227 @@
-        .flatpickr-day.flatpickr-disabled {
-            background: #ffdede;
-            color: #a60000;
-            border-radius: 6px !important;
-        }
-        .flatpickr-day.flatpickr-disabled:hover {
-            cursor: not-allowed !important;
-        }
-        .flatpickr-day.selected,
-        .flatpickr-day.startRange,
-        .flatpickr-day.endRange {
-            background: #3aa600 !important;
-            color: #ffffff !important;
-            box-shadow: none !important;
-            border-radius: 6px !important;
-        }
-        .flatpickr-day.inRange {
-            background: #e6f9db !important; 
-            color: #0b6b00 !important;
-        }
+/* Airbnb Design System Variables */
+:root {
+  --airbnb-red: #ff385c;
+  --airbnb-red-hover: #d90b3e;
+  --text-primary: #222222;
+  --text-secondary: #717171;
+  --bg-light: #ffffff;
+  --border-color: #dddddd;
+  --border-radius: 12px;
+  --font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+/* Reset & Base Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-light);
+  color: var(--text-primary);
+  line-height: 1.43;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* Typography */
+h2 {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+a {
+  color: var(--text-primary);
+  text-decoration: underline;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+a:hover {
+  color: var(--text-secondary);
+}
+
+/* Layout */
+.container {
+  width: 100%;
+  max-width: 568px; /* Airbnb modal width */
+  margin: 24px;
+  padding: 0;
+  background: #fff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12); /* Subtle elevation */
+}
+
+.title_logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Header inside card */
+.auth-header {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
+  min-height: 64px;
+}
+
+.auth-header img {
+  height: 100px;
+  width: auto;
+  display: block;
+}
+
+.auth-header h2 {
+  margin: 0;
+  font-size: 36px;
+  font-weight: 700;
+}
+
+/* Form Container */
+.auth-body {
+  padding: 24px;
+}
+
+/* Form Elements */
+.form-group {
+  margin-bottom: 16px;
+  position: relative;
+}
+
+label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+  margin-left: 2px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+select {
+  width: 100%;
+  padding: 16px;
+  font-size: 16px;
+  border: 1px solid #b0b0b0;
+  border-radius: 8px;
+  background-color: transparent;
+  transition:
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+  appearance: none;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: var(--text-primary);
+  box-shadow: 0 0 0 2px var(--text-primary);
+}
+
+/* Button */
+.btn,
+button[type="submit"] {
+  width: 100%;
+  background: linear-gradient(to right, #e61e4d 0%, #e31c5f 50%, #d80565 100%);
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 14px 24px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 16px;
+  transition:
+    opacity 0.2s ease,
+    transform 0.1s ease;
+}
+
+.btn:hover,
+button[type="submit"]:hover {
+  opacity: 0.95;
+}
+
+.btn:active,
+button[type="submit"]:active {
+  transform: scale(0.96);
+}
+
+/* Utilities & Validation Messages */
+p {
+  margin-bottom: 16px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.error-msg {
+  color: #c13515;
+  background-color: #fff8f6;
+  border: 1px solid #c13515;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.success-msg {
+  color: #0f7b12;
+  background-color: #f0fff4;
+  border: 1px solid #0f7b12;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 24px 0;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background-color: var(--border-color);
+}
+
+.divider::before {
+  margin-right: 16px;
+}
+
+.divider::after {
+  margin-left: 16px;
+}
+
+/* Floating labels simulation if needed, but sticking to standard for stability */
+
+/* Flatpickr overrides for other pages (keeping purely for compatibility if used elsewhere) */
+.flatpickr-day.selected {
+  background: var(--airbnb-red) !important;
+  border-color: var(--airbnb-red) !important;
+}
