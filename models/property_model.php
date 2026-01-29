@@ -1,34 +1,49 @@
 <?php
 
-class Property{
+class Property {
     private $db;
 
-    public function __construct($conexion){
+    public function __construct($conexion) {
         $this->db = $conexion;
     }
 
-    public function obtener_propiedades(){
-        #retorna todas las propiedades existentes
-        $sql = "SELECT * FROM propiedades";
-        $stmt = $this->db->prepare($sql);
-        try{
-            $stmt->execute();
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        }catch(PDOException $e){
-            die("Error al obtener propiedades: " . $e->getMessage());
-        }
-
-    }
-
-    public function agregar_propiedad($titulo, $descripcion, $precio, $ubicacion, $id_usuario, $imagen_url, $capacidad){
-        #CREATE propiedad. Recibe los datos e inserta en la bd
+    public function agregar_propiedad($titulo, $descripcion, $precio, $ubicacion, $id_usuario, $imagen_url, $capacidad) {
         $sql = "INSERT INTO propiedades (titulo, descripcion, precio_noche, ubicacion, id_anfitrion, imagen_url, capacidad) VALUES (?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->db->prepare($sql);
-        try{
+        try {
             $stmt->execute([$titulo, $descripcion, $precio, $ubicacion, $id_usuario, $imagen_url, $capacidad]);
+            // Retornamos el último ID para poder usarlo en las comodidades inmediatamente
+            return $this->db->lastInsertId();
+        } catch (PDOException $e) {
+            // Log de error para debug
+            error_log("Error en agregar_propiedad: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function actualizar_propiedad($id_propiedad, $titulo, $descripcion, $precio, $ubicacion, $imagen_url, $id_usuario) {
+        $sql = "UPDATE propiedades SET titulo = ?, descripcion = ?, precio_noche = ?, ubicacion = ?, imagen_url = ? 
+                WHERE id_propiedad = ? AND id_anfitrion = ?";
+        $stmt = $this->db->prepare($sql);
+        try {
+            $stmt->execute([$titulo, $descripcion, $precio, $ubicacion, $imagen_url, $id_propiedad, $id_usuario]);
+            return true; 
+        } catch (PDOException $e) {
+            die("Error al actualizar propiedad: " . $e->getMessage());
+        }
+    }
+    
+    public function agregar_comodidades($id_propiedad, $comodidades){
+        #Agregar las comodidades asociadas a una propiedad
+        $sql = "INSERT INTO propiedad_comodidades (id_propiedad, id_comodidad) VALUES (?, ?)";
+        $stmt = $this->db->prepare($sql);
+        try{
+            foreach ($comodidades as $id_comodidad) {
+                $stmt->execute([$id_propiedad, $id_comodidad]);
+            }
             return true;
         }catch(PDOException $e){
-            die("Error al agregar propiedad: " . $e->getMessage());
+            die("Error al agregar comodidades: " . $e->getMessage());
         }
     }
 
@@ -44,15 +59,21 @@ class Property{
         }
     }
 
-    public function actualizar_propiedad($id_propiedad, $titulo, $descripcion, $precio, $ubicacion, $imagen_url, $id_usuario){
-        #UPDATE propiedad, recibe datos nuevos y cambia en los campos relacionados con el id de la propiedad
-        $sql = "UPDATE propiedades SET titulo = ?, descripcion = ?, precio_noche = ?, ubicacion = ?, imagen_url = ? WHERE id_propiedad = ? AND id_anfitrion = ?";
-        $stmt = $this->db->prepare($sql);
+    public function actualizar_comodidades($id_propiedad, $comodidades){
+        #Actualizar las comodidades asociadas a una propiedad
+        $sqlEliminar = "DELETE FROM propiedad_comodidades WHERE id_propiedad = ?";
+        $stmtEliminar = $this->db->prepare($sqlEliminar);
         try{
-            $stmt->execute([$titulo, $descripcion, $precio, $ubicacion, $imagen_url, $id_propiedad, $id_usuario]);
-            return $stmt->rowCount() > 0;
+            $stmtEliminar->execute([$id_propiedad]);
+            
+            $sqlInsertar = "INSERT INTO propiedad_comodidades (id_propiedad, id_comodidad) VALUES (?, ?)";
+            $stmtInsertar = $this->db->prepare($sqlInsertar);
+            foreach ($comodidades as $id_comodidad) {
+                $stmtInsertar->execute([$id_propiedad, $id_comodidad]);
+            }
+            return true;
         }catch(PDOException $e){
-            die("Error al actualizar propiedad: " . $e->getMessage());
+            die("Error al actualizar comodidades: " . $e->getMessage());
         }
     }
 
@@ -67,6 +88,20 @@ class Property{
             return $stmt->fetch(PDO::FETCH_ASSOC);
         }catch(PDOException $e){
             die("Error al obtener propiedad: " . $e->getMessage());
+        }
+    }
+
+    public function obtener_comodidades_por_propiedad($id_propiedad){
+        #Obtener las comodidades asociadas a una propiedad
+        $sql = "SELECT c.* FROM comodidades c
+                JOIN propiedad_comodidades pc ON c.id_comodidad = pc.id_comodidad
+                WHERE pc.id_propiedad = ?";
+        $stmt = $this->db->prepare($sql);
+        try{
+            $stmt->execute([$id_propiedad]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }catch(PDOException $e){
+            die("Error al obtener comodidades: " . $e->getMessage());
         }
     }
 
