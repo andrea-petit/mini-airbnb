@@ -13,8 +13,8 @@ if (empty($_SESSION['csrf_token'])) {
 </head>
 <body>
     <div class="container">
-        <div class="auth-header">
-            <h2>Regístrate</h2>
+        <div class="auth-header-reg">
+            <h2>Crea tu cuenta</h2>
         </div>
         
         <div class="auth-body">
@@ -31,8 +31,6 @@ if (empty($_SESSION['csrf_token'])) {
                     </span>
                 </div>
             <?php endif; ?>
-
-            <h3 style="font-size: 22px; font-weight: 500; margin-bottom: 24px; color: #222;">Crea tu cuenta</h3>
 
             <form action="../actions/user_actions.php?action=registrar" method="POST">
                 <div class="form-group">
@@ -61,7 +59,7 @@ if (empty($_SESSION['csrf_token'])) {
                 <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
 
                 <p style="font-size: 12px; color: #717171; text-align: left; margin-bottom: 16px;">
-                    Al seleccionar <strong>Registrarme</strong>, aceptas los Términos de servicio de Airbnb.
+                    Al seleccionar <strong>Registrarme</strong>, aceptas los <a style="font-size: 12px; color: #717171; text-align: left; margin-bottom: 16px;">Términos de servicio de WindBnB.</a>
                 </p>
 
                 <button type="submit">Registrarme</button>
