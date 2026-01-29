@@ -35,22 +35,22 @@ class Reserva{
         }
     }
 
-    public function cancelar_reserva($id_reserva, $id_usuario){
+    public function cancelar_reserva($id_reserva){
         try {
-            $sql = "DELETE FROM reservas WHERE id_reserva = ? AND id_huesped = ?";
+            $sql = "UPDATE reservas SET estado = 'cancelada' WHERE id_reserva = ?";
             $stmt = $this->pdo->prepare($sql);
-            return $stmt->execute([$id_reserva, $id_usuario]);
+            return $stmt->execute([$id_reserva]);
         } catch (PDOException $e) {
             error_log("Error al cancelar reserva: " . $e->getMessage());
             return false;
         }
     }
 
-    public function confirmar_reserva($id_reserva, $id_usuario){
+    public function confirmar_reserva($id_reserva){
         try {
-            $sql = "UPDATE reservas SET estado = 'confirmada' WHERE id_reserva = ? AND id_huesped = ?";
+            $sql = "UPDATE reservas SET estado = 'confirmada' WHERE id_reserva = ?";
             $stmt = $this->pdo->prepare($sql);
-            return $stmt->execute([$id_reserva, $id_usuario]);
+            return $stmt->execute([$id_reserva]);
         } catch (PDOException $e) {
             error_log("Error al confirmar reserva: " . $e->getMessage());
             return false;

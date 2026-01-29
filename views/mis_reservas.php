@@ -27,7 +27,7 @@ if ($userRol === 'anfitrion') {
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <nav> <a href="index.php">← Volver al Inicio</a> </nav>
+    <nav> <a href="../public/index.php">← Volver al Inicio</a> </nav>
     
     <main class="container" style="padding: 20px;">
         <h1><?php echo $titulo; ?></h1>
@@ -60,12 +60,14 @@ if ($userRol === 'anfitrion') {
                             <?php if ($userRol === 'anfitrion'): ?>
                                 <form action="../actions/reserva_actions.php?action=confirmar" method="POST" style="display:inline;">
                                     <input type="hidden" name="id_reserva" value="<?php echo $r['id_reserva']; ?>">
+                                    <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
                                     <button type="submit" style="background:green; color:white;">Aceptar</button>
                                 </form>
                             <?php endif; ?>
                             
                             <form action="../actions/reserva_actions.php?action=cancelar" method="POST" style="display:inline;">
                                 <input type="hidden" name="id_reserva" value="<?php echo $r['id_reserva']; ?>">
+                                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
                                 <button type="submit" style="background:red; color:white;">
                                     <?php echo ($userRol === 'anfitrion') ? "Rechazar" : "Cancelar"; ?>
                                 </button>

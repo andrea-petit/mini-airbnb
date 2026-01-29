@@ -83,11 +83,10 @@ class ReservaController{
                 die("Error: token CSRF inválido");
             }
             $id_reserva= intval($_POST['id_reserva']);
-            $id_usuario= intval($_SESSION['user_id']);
 
-            $exito= $this->modelo->cancelar_reserva($id_reserva, $id_usuario);
+            $exito= $this->modelo->cancelar_reserva($id_reserva);
             if($exito){
-                header("Location: ../public/templates/reserva_cancelada.php");
+                header("Location: ../public/index.php?cancelacion=exito");
                 exit();
             }else{
                 header("Location: ../public/index.php?error=cancelacion_fallida");
@@ -102,11 +101,10 @@ class ReservaController{
                 die("Error: token CSRF inválido");
             }
             $id_reserva= intval($_POST['id_reserva']);
-            $id_usuario= intval($_SESSION['user_id']);
 
-            $exito= $this->modelo->confirmar_reserva($id_reserva, $id_usuario);
+            $exito= $this->modelo->confirmar_reserva($id_reserva);
             if($exito){
-                header("Location: ../views/index.php?confirmacion=exito");
+                header("Location: ../public/index.php?confirmacion=exito");
                 exit();
             }else{
                 header("Location: ../views/index.php?error=confirmacion_fallida");
