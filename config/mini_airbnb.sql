@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 29-01-2026 a las 02:59:00
+-- Tiempo de generación: 29-01-2026 a las 23:39:20
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -20,6 +20,29 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `mini_airbnb`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `comodidades`
+--
+
+CREATE TABLE `comodidades` (
+  `id_comodidad` int(11) NOT NULL,
+  `nombre` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `comodidades`
+--
+
+INSERT INTO `comodidades` (`id_comodidad`, `nombre`) VALUES
+(1, 'Wifi'),
+(2, 'Cocina'),
+(3, 'Aire acondicionado'),
+(4, 'Estacionamiento'),
+(5, 'TV'),
+(6, 'Lavadora');
 
 -- --------------------------------------------------------
 
@@ -44,7 +67,31 @@ CREATE TABLE `propiedades` (
 --
 
 INSERT INTO `propiedades` (`id_propiedad`, `id_anfitrion`, `titulo`, `descripcion`, `precio_noche`, `ubicacion`, `imagen_url`, `capacidad`, `disponible`) VALUES
-(1, 3, 'Mi casa', 'acogedora', 70.00, 'puerta maraven', '1769298362_697559bab9bbb.jpg', 5, 1);
+(1, 3, 'Mi casa', 'sisisisisisiisis', 70.00, 'puerta maraven', '1769723661_697bd70d1c6ce.jpg', 5, 1),
+(3, 3, 'Nueva Casa', 'asquerosidad', 80.00, 'Falcon', '1769725077_697bdc9545901.jpg', 15, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `propiedad_comodidades`
+--
+
+CREATE TABLE `propiedad_comodidades` (
+  `id_propiedad` int(11) NOT NULL,
+  `id_comodidad` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `propiedad_comodidades`
+--
+
+INSERT INTO `propiedad_comodidades` (`id_propiedad`, `id_comodidad`) VALUES
+(3, 1),
+(3, 2),
+(3, 3),
+(3, 4),
+(3, 5),
+(3, 6);
 
 -- --------------------------------------------------------
 
@@ -69,9 +116,11 @@ CREATE TABLE `reservas` (
 --
 
 INSERT INTO `reservas` (`id_reserva`, `id_propiedad`, `id_huesped`, `fecha_inicio`, `fecha_fin`, `precio_total`, `cant_huespedes`, `estado`, `creado_en`) VALUES
-(1, 1, 1, '2026-01-26', '2026-01-30', 0.00, 3, 'pendiente', '2026-01-26 22:19:37'),
+(1, 1, 1, '2026-01-26', '2026-01-30', 0.00, 3, 'cancelada', '2026-01-26 22:19:37'),
 (3, 1, 1, '2026-01-31', '2026-02-06', 0.00, 10, 'pendiente', '2026-01-28 22:05:24'),
-(4, 1, 1, '2026-04-14', '2026-04-30', 0.00, 1, 'pendiente', '2026-01-28 22:24:30');
+(4, 1, 1, '2026-04-14', '2026-04-30', 0.00, 1, 'pendiente', '2026-01-28 22:24:30'),
+(5, 1, 1, '2026-02-07', '2026-02-14', 2450.00, 5, 'pendiente', '2026-01-29 20:15:04'),
+(6, 1, 1, '2026-02-25', '2026-02-28', 210.00, 1, 'pendiente', '2026-01-29 20:16:34');
 
 -- --------------------------------------------------------
 
@@ -101,11 +150,24 @@ INSERT INTO `usuarios` (`id_usuario`, `username`, `email`, `password`, `rol`, `c
 --
 
 --
+-- Indices de la tabla `comodidades`
+--
+ALTER TABLE `comodidades`
+  ADD PRIMARY KEY (`id_comodidad`);
+
+--
 -- Indices de la tabla `propiedades`
 --
 ALTER TABLE `propiedades`
   ADD PRIMARY KEY (`id_propiedad`),
   ADD KEY `id_anfitrion` (`id_anfitrion`);
+
+--
+-- Indices de la tabla `propiedad_comodidades`
+--
+ALTER TABLE `propiedad_comodidades`
+  ADD PRIMARY KEY (`id_propiedad`,`id_comodidad`),
+  ADD KEY `fk_comodidad` (`id_comodidad`);
 
 --
 -- Indices de la tabla `reservas`
@@ -127,16 +189,22 @@ ALTER TABLE `usuarios`
 --
 
 --
+-- AUTO_INCREMENT de la tabla `comodidades`
+--
+ALTER TABLE `comodidades`
+  MODIFY `id_comodidad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
 -- AUTO_INCREMENT de la tabla `propiedades`
 --
 ALTER TABLE `propiedades`
-  MODIFY `id_propiedad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_propiedad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `reservas`
 --
 ALTER TABLE `reservas`
-  MODIFY `id_reserva` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_reserva` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
@@ -153,6 +221,13 @@ ALTER TABLE `usuarios`
 --
 ALTER TABLE `propiedades`
   ADD CONSTRAINT `propiedades_ibfk_1` FOREIGN KEY (`id_anfitrion`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE;
+
+--
+-- Filtros para la tabla `propiedad_comodidades`
+--
+ALTER TABLE `propiedad_comodidades`
+  ADD CONSTRAINT `fk_comodidad` FOREIGN KEY (`id_comodidad`) REFERENCES `comodidades` (`id_comodidad`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_propiedad` FOREIGN KEY (`id_propiedad`) REFERENCES `propiedades` (`id_propiedad`) ON DELETE CASCADE;
 
 --
 -- Filtros para la tabla `reservas`
