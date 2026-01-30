@@ -15,15 +15,24 @@ class User {
         return $stmt->fetch() ? true : false;
     }
 
-    public function registrar($username, $email, $password, $rol){
+    public function nro_registrado($nro_tlf) {
+        $sql = "SELECT id_usuario FROM usuarios WHERE nro_tlf = ? LIMIT 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$nro_tlf]);
+
+        return $stmt->fetch() ? true : false;
+    }
+
+    public function registrar($username, $email, $password, $nro_tlf, $rol){
         #Recibe datos de usuarios, hashea la contraseña y guarda en la bd,
         $hashed_password= password_hash($password, PASSWORD_BCRYPT);
 
-        $sql = "INSERT INTO usuarios (username, email, password, rol) VALUES (?, ?, ?, ?)";
+
+        $sql = "INSERT INTO usuarios (username, email, password, nro_tlf, rol) VALUES (?, ?, ?, ?, ?)";
         $stmt= $this->db->prepare($sql);
 
         try{
-            $stmt->execute([$username, $email, $hashed_password, $rol]);
+            $stmt->execute([$username, $email, $hashed_password, $nro_tlf, $rol]);
             return true;
 
         }catch(PDOexception $e){

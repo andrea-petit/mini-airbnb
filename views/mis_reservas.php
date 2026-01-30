@@ -127,7 +127,7 @@ if ($userRol === 'anfitrion') {
                                 <button class="btn-reservation btn-disabled" disabled>Sin acciones disponibles</button>
                             <?php endif; ?>
                             
-                            <button onclick="location.href='mensajes.php?con=<?php echo $r['id_reserva']; ?>'" class="btn-reservation btn-message">
+                            <button onclick="window.open('https://wa.me/<?php echo htmlspecialchars($r['telefono_huesped']); ?>?text=Hola%20<?php echo htmlspecialchars($r['nombre_huesped']); ?>,%20te%20contacto%20por%20la%20reserva%20de%20la%20propiedad%20<?php echo htmlspecialchars($r['titulo_propiedad']); ?>.', '_blank')" class="btn-reservation btn-message">
                                 Enviar Mensaje
                             </button>
                         </div>

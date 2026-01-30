@@ -7,13 +7,75 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit();
 }
 
-$id_propiedad = $_POST['id_propiedad'];
-$f_inicio = $_POST['fecha_inicio'];
-$f_fin = $_POST['fecha_fin'];
-$cant_huespedes = $_POST['cant_huespedes'];
+function validate_int($v) {
+    if (!isset($v) || $v === '') return false;
+    return filter_var($v, FILTER_VALIDATE_INT) !== false;
+}
 
-$d1 = new DateTime($f_inicio);
-$d2 = new DateTime($f_fin);
+function validate_float($v) {
+    if (!isset($v) || $v === '') return false;
+    $v = str_replace(',', '.', $v);
+    return filter_var($v, FILTER_VALIDATE_FLOAT) !== false;
+}
+
+function validate_date($d) {
+    if (!isset($d) || trim($d) === '') return false;
+    try {
+        $dt = new DateTime($d);
+        return true;
+    } catch (Exception $e) {
+        return false;
+    }
+}
+
+$errors = [];
+
+$id_propiedad = $_POST['id_propiedad'] ?? '';
+$f_inicio = $_POST['fecha_inicio'] ?? '';
+$f_fin = $_POST['fecha_fin'] ?? '';
+$cant_huespedes = $_POST['cant_huespedes'] ?? '';
+
+if (!validate_int($id_propiedad)) {
+    $errors[] = 'ID de propiedad inválido.';
+}
+
+if (!validate_date($f_inicio) || !validate_date($f_fin)) {
+    $errors[] = 'Fechas inválidas.';
+} else {
+    $d1 = new DateTime($f_inicio);
+    $d2 = new DateTime($f_fin);
+    if ($d1 >= $d2) {
+        $errors[] = 'La fecha de fin debe ser posterior a la fecha de inicio.';
+    }
+}
+
+if (!validate_int($cant_huespedes) || (int)$cant_huespedes <= 0) {
+    $errors[] = 'Cantidad de huéspedes inválida (debe ser entero mayor que 0).';
+}
+
+if (!empty($errors)) {
+    ?>
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="utf-8">
+        <title>Errores en el formulario</title>
+        <link rel="stylesheet" href="../public/css/style.css">
+    </head>
+    <body>
+    <div class="container" style="max-width:600px;margin:40px auto;padding:20px;border:1px solid #ddd;border-radius:8px;">
+        <h2>Errores en los datos enviados</h2>
+        <ul style="color:#a33;">
+            <?php foreach ($errors as $e) echo '<li>'.htmlspecialchars($e).'</li>'; ?>
+        </ul>
+        <p><a href="../public/index.php">Volver al inicio</a></p>
+    </div>
+    </body>
+    </html>
+    <?php
+    exit();
+}
+
 $noches = $d1->diff($d2)->days;
 ?>
 

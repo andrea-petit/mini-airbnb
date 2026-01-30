@@ -44,6 +44,11 @@ if (empty($_SESSION['csrf_token'])) {
                 </div>
 
                 <div class="form-group">
+                    <label>Número de teléfono</label>
+                    <input type="tel" name="nro_tlf" required placeholder="Ej: 123456789" maxlength="11" >
+                </div>
+
+                <div class="form-group">
                     <label>Contraseña</label>
                     <input type="password" name="password" required minlength="6" placeholder="Mínimo 6 caracteres">
                 </div>
@@ -70,5 +75,28 @@ if (empty($_SESSION['csrf_token'])) {
             <p>¿Ya tienes cuenta? <a href="login.php">Inicia sesión</a></p>
         </div>
     </div>
+<script>
+(function(){
+    const el = document.querySelector('input[name="nro_tlf"]');
+    if (!el) return;
+    el.addEventListener('keydown', function(e){
+        const allowed = ['Backspace','ArrowLeft','ArrowRight','Delete','Tab','Home','End'];
+        if (allowed.includes(e.key) || e.ctrlKey || e.metaKey) return;
+        if (/^\d$/.test(e.key)) return;
+        e.preventDefault();
+    });
+    el.addEventListener('input', function(){
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
+    el.addEventListener('paste', function(e){
+        const text = (e.clipboardData || window.clipboardData).getData('text');
+        const cleaned = text.replace(/[^0-9]/g, '');
+        if (cleaned !== text) {
+            e.preventDefault();
+            document.execCommand('insertText', false, cleaned);
+        }
+    });
+})();
+</script>
 </body>
 </html>
