@@ -3,198 +3,189 @@ session_start();
 require_once '../config/db.php';
 require_once '../controllers/property_controller.php';
 
+$id_propiedad = $_GET['id'] ?? null;
+if (!$id_propiedad) {
+    header("Location: ../public/index.php");
+    exit();
+}
+
 $propCtrl = new PropertyController($pdo);
 $propiedad = null;
 $esEdicion = false;
 $comodidadesSeleccionadas = [];
+$step = isset($_GET['step']) ? (int)$_GET['step'] : 1;
 
-// 1. Lógica de carga de datos
 if (isset($_GET['id'])) {
     $id_propiedad = (int)$_GET['id'];
     $propiedad = $propCtrl->obtener_propiedad_por_id($id_propiedad);
     
     if ($propiedad) {
-        $esEdicion = true;
-        // Obtenemos solo los IDs de las comodidades ya marcadas
+        $esEdicion = !isset($_GET['new']); 
+        
         $stmtIds = $pdo->prepare("SELECT id_comodidad FROM propiedad_comodidades WHERE id_propiedad = ?");
         $stmtIds->execute([$id_propiedad]);
         $comodidadesSeleccionadas = $stmtIds->fetchAll(PDO::FETCH_COLUMN);
     }
 }
 
-// 2. Catálogo de comodidades
 $stmtAll = $pdo->query("SELECT * FROM comodidades ORDER BY nombre ASC");
 $todasComodidades = $stmtAll->fetchAll(PDO::FETCH_ASSOC);
 
-$tituloPagina = $esEdicion ? "Gestionar Propiedad" : "Publicar Nueva Propiedad";
+if($step == 2){
+    $tituloPagina = "Agregar Comodidades";
+}else{
+    $tituloPagina = $esEdicion ? "Editar Propiedad" : "Agregar Nueva Propiedad";
+}
+
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <?php $userName = $_SESSION['user_name'] ?? 'Usuario'; ?>
     <title><?php echo $tituloPagina; ?></title>
-    <link rel="stylesheet" href="../public/css/styles.css?v=1.0">
-    <link rel="stylesheet" href="../public/css/index.css?v=1.0">
+    <link rel="stylesheet" href="../public/css/style.css">
     <style>
+        :root { --primary: #ff385c; --dark: #222; --border: #ddd; }
+        body { background: #fbfbfb; font-family: 'Segoe UI', sans-serif; color: #333; }
+        .container { max-width: 800px; margin: 40px auto; padding: 0 20px; }
+        
+        /* Tabs */
+        .tabs-nav { display: flex; gap: 5px; margin-bottom: -1px; }
+        .tab-btn { 
+            padding: 12px 25px; border-radius: 12px 12px 0 0; border: 1px solid var(--border); 
+            border-bottom: none; background: #eee; font-weight: 600; color: #777;
+        }
+        .tab-btn.active { background: white; color: var(--primary); border-top: 3px solid var(--primary); }
+        .tab-btn.disabled { opacity: 0.5; cursor: not-allowed; }
+        .tab-btn.clickable { cursor: pointer; }
+
         .card-form {
-            background: #fff;
-            padding: 25px;
-            border-radius: 12px;
-            border: 1px solid #ddd;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            background: #fff; padding: 30px; border-radius: 0 12px 12px 12px; border: 1px solid var(--border);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px;
         }
-        .amenities-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 15px;
-            margin: 20px 0;
+        
+        .hidden { display: none !important; }
+
+        label { display: block; margin-bottom: 8px; font-weight: 600; }
+        input, textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 15px; box-sizing: border-box; }
+        
+        .btn-main { 
+            background: var(--primary); color: white; padding: 14px 30px; border: none; 
+            border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%;
         }
-        .section-header-form {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid #f7f7f7;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-        }
-        .btn-save {
-            background: #ff385c;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .btn-secondary {
-            background: #222;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-        }
+        
+        .amenities-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin: 25px 0; }
+        .amenity-item { display: flex; align-items: center; gap: 10px; padding: 12px; border: 1px solid #eee; border-radius: 10px; cursor: pointer; }
     </style>
 </head>
-<body style="background: #fbfbfb; font-family: sans-serif;">
+<body>
 
-    <nav class="navbar">
-        <div class="logo-container">
-            <a href="../public/index.php" class="nav-logo">WindBnB</a>
-        </div>
-        
-        <div class="nav-right">
-            <div class="user-menu-pill">
-                <div class="hamburger-icon">
-                    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: none; height: 16px; width: 16px; stroke: currentcolor; stroke-width: 3; overflow: visible;"><g fill="none" fill-rule="nonzero"><path d="m2 16h28"></path><path d="m2 24h28"></path><path d="m2 8h28"></path></g></svg>
-                </div>
-                <div class="user-avatar">
-                   <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; height: 30px; width: 30px; fill: currentcolor;"><path d="m16 .7c-8.437 0-15.3 6.863-15.3 15.3s6.863 15.3 15.3 15.3 15.3-6.863 15.3-15.3-6.863-15.3-15.3-15.3zm0 28c-4.021 0-7.605-1.884-9.933-4.81a12.425 12.425 0 0 1 6.451-4.4 6.507 6.507 0 0 1 -3.018-5.49c0-3.584 2.916-6.5 6.5-6.5s6.5 2.916 6.5 6.5a6.513 6.513 0 0 1 -3.019 5.491 12.42 12.42 0 0 1 6.452 4.4c-2.328 2.925-5.912 4.809-9.933 4.809z"></path></svg>
-                </div>
-                
-                <div class="user-dropdown">
-                    <div class="dropdown-header">Hola, <strong><?php echo htmlspecialchars($userName); ?></strong></div>
-                    <hr>
-                    <a href="../public/index.php" class="dropdown-item">Inicio</a>
-                    <a href="mis_reservas.php" class="dropdown-item">Mis Viajes</a>
-                    <hr>
-                    <a href="../actions/user_actions.php?action=logout" class="dropdown-item text-danger">Cerrar Sesión</a>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-<div class="container" style="max-width: 800px; margin: 40px auto; padding: 0 20px;">
-    
+<div class="container">
     <header style="margin-bottom: 30px;">
-        <h1 style="margin-top: 10px;"><?php echo $tituloPagina; ?></h1>
+        <a href="../public/index.php" style="color: var(--primary); text-decoration: none; font-weight: bold;">← Volver al Panel</a>
+        <h1><?php echo $tituloPagina; ?></h1>
     </header>
 
-    <section class="card-form">
-        <div class="section-header-form">
-            <h2 style="margin:0; font-size: 1.3em;">1. Datos Generales</h2>
-            <?php if ($esEdicion): ?>
-                <span style="background: #e7f3ff; color: #1877f2; padding: 4px 10px; border-radius: 20px; font-size: 0.8em;">Editando ID: #<?php echo $propiedad['id_propiedad']; ?></span>
-            <?php endif; ?>
-        </div>
+    <div class="tabs-nav">
+        <button id="btn-tab-1" class="tab-btn <?php echo $step == 1 ? 'active' : ''; ?> <?php echo $esEdicion ? 'clickable' : 'disabled'; ?>" 
+                <?php echo $esEdicion ? "onclick=\"switchTab('datos')\"" : ""; ?>>
+            1. Datos Básicos
+        </button>
+        <button id="btn-tab-2" class="tab-btn <?php echo $step == 2 ? 'active' : ''; ?> <?php echo ($esEdicion || $step == 2) ? 'clickable' : 'disabled'; ?>" 
+                <?php echo ($esEdicion || $step == 2) ? "onclick=\"switchTab('comodidades')\"" : ""; ?>>
+            2. Comodidades
+        </button>
+    </div>
 
+    <section id="section-datos" class="card-form <?php echo ($step == 2) ? 'hidden' : ''; ?>">
         <form action="../actions/property_actions.php?action=<?php echo $esEdicion ? 'actualizar' : 'registrar'; ?>" method="POST" enctype="multipart/form-data">
-            <?php if ($esEdicion): ?>
+            <?php if ($propiedad): ?>
                 <input type="hidden" name="id_propiedad" value="<?php echo $propiedad['id_propiedad']; ?>">
             <?php endif; ?>
 
-            <div style="margin-bottom: 15px;">
-                <label style="display:block; margin-bottom: 5px;">Título del anuncio:</label>
-                <input type="text" name="titulo" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;"
-                       value="<?php echo $esEdicion ? htmlspecialchars($propiedad['titulo']) : ''; ?>">
+            <label>Título del anuncio</label>
+            <input type="text" name="titulo" required value="<?php echo $propiedad ? htmlspecialchars($propiedad['titulo']) : ''; ?>">
+
+            <label>Descripción</label>
+            <textarea name="descripcion" required><?php echo $propiedad ? htmlspecialchars($propiedad['descripcion']) : ''; ?></textarea>
+
+            <div style="display: flex; gap: 20px;">
+                <div style="flex: 1;"><label>Capacidad</label><input type="number" name="capacidad" min="1" required value="<?php echo $propiedad ? $propiedad['capacidad'] : ''; ?>"></div>
+                <div style="flex: 1;"><label>Precio/Noche (USD)</label><input type="number" name="precio" step="0.01" required value="<?php echo $propiedad ? $propiedad['precio_noche'] : ''; ?>"></div>
             </div>
 
-            <div style="margin-bottom: 15px;">
-                <label style="display:block; margin-bottom: 5px;">Descripción:</label>
-                <textarea name="descripcion" required style="width: 100%; height: 100px; padding: 10px; border: 1px solid #ccc; border-radius: 6px;"><?php echo $esEdicion ? htmlspecialchars($propiedad['descripcion']) : ''; ?></textarea>
-            </div>
+            <label>Ubicación</label>
+            <input type="text" name="ubicacion" required value="<?php echo $propiedad ? htmlspecialchars($propiedad['ubicacion']) : ''; ?>">
 
-            <div style="display: flex; gap: 20px; margin-bottom: 15px;">
-                <div style="flex: 1;">
-                    <label style="display:block; margin-bottom: 5px;">Capacidad:</label>
-                    <input type="number" name="capacidad" min="1" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;"
-                           value="<?php echo $esEdicion ? $propiedad['capacidad'] : ''; ?>">
+            <label>Imagen</label>
+            <?php if($propiedad && !empty($propiedad['imagen_url'])): ?>
+                <div style="margin-bottom: 15px; display: flex; align-items: center; gap: 15px; background: #f9f9f9; padding: 10px; border-radius: 8px;">
+                    <img src="../public/uploads/<?php echo $propiedad['imagen_url']; ?>" style="width: 80px; height: 60px; object-fit: cover;">
+                    <span style="font-size: 0.8em; color: #666;">Imagen actual conservada.</span>
                 </div>
-                <div style="flex: 1;">
-                    <label style="display:block; margin-bottom: 5px;">Precio/Noche (USD):</label>
-                    <input type="number" name="precio" step="0.01" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;"
-                           value="<?php echo $esEdicion ? $propiedad['precio_noche'] : ''; ?>">
-                </div>
-            </div>
+            <?php endif; ?>
+            <input type="file" name="foto" accept="image/*" <?php echo ($propiedad) ? '' : 'required'; ?>>
 
-            <div style="margin-bottom: 20px;">
-                <label style="display:block; margin-bottom: 5px;">Ubicación:</label>
-                <input type="text" name="ubicacion" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;"
-                       value="<?php echo $esEdicion ? htmlspecialchars($propiedad['ubicacion']) : ''; ?>">
-            </div>
-
-            <div style="margin-bottom: 20px;">
-                <label style="display:block; margin-bottom: 5px;">Imagen de la propiedad:</label>
-                <input type="file" name="foto" accept="image/*" <?php echo $esEdicion ? '' : 'required'; ?>>
-            </div>
-
-            <button type="submit" class="btn-save">
-                <?php echo $esEdicion ? "Actualizar Datos Básicos" : "Siguiente: Guardar Propiedad"; ?>
+            <button type="submit" class="btn-main">
+                <?php echo $esEdicion ? "Actualizar Información" : "Guardar y Continuar →"; ?>
             </button>
         </form>
     </section>
 
-    <section class="card-form" <?php echo !$esEdicion ? 'style="opacity: 0.5; pointer-events: none;"' : ''; ?>>
-        <div class="section-header-form">
-            <h2 style="margin:0; font-size: 1.3em;">2. Comodidades y Servicios</h2>
-            <?php if (!$esEdicion): ?>
-                <small style="color: #ff385c;">* Primero guarda los datos básicos</small>
-            <?php endif; ?>
+    <section id="section-comodidades" class="card-form <?php echo ($step == 1) ? 'hidden' : ''; ?>">
+        <div style="margin-bottom: 20px;">
+            <h2>¿Qué ofrece tu alojamiento?</h2>
+            <p>Selecciona todas las comodidades que apliquen.</p>
         </div>
 
-        <form action="../actions/property_actions.php?action=<?php echo $esEdicion ? 'actualizar_comodidades' : 'agregar_comodidades'; ?>" method="POST">
+        <form action="../actions/property_actions.php?action=actualizar_comodidades" method="POST">
             <input type="hidden" name="id_propiedad" value="<?php echo $propiedad['id_propiedad'] ?? ''; ?>">
+            <?php if(isset($_GET['new'])): ?> <input type="hidden" name="is_new" value="1"> <?php endif; ?>
 
             <div class="amenities-grid">
                 <?php foreach ($todasComodidades as $com): ?>
-                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                    <label class="amenity-item">
                         <input type="checkbox" name="comodidades[]" value="<?php echo $com['id_comodidad']; ?>"
                             <?php echo in_array($com['id_comodidad'], $comodidadesSeleccionadas) ? 'checked' : ''; ?>>
-                        <?php echo htmlspecialchars($com['nombre']); ?>
+                        <span><?php echo htmlspecialchars($com['nombre']); ?></span>
                     </label>
                 <?php endforeach; ?>
             </div>
 
-            <button type="submit" class="btn-secondary">
-                <?php echo $esEdicion ? "Actualizar Comodidades" : "Guardar Comodidades"; ?>
+            <button type="submit" class="btn-main" style="background: var(--dark);">
+                <?php echo ($esEdicion) ? "Actualizar Comodidades" : "Publicar Propiedad Ahora"; ?>
             </button>
         </form>
     </section>
-
 </div>
+
+<script>
+    function switchTab(tab) {
+        const isEdicion = <?php echo json_encode($esEdicion); ?>;
+        const currentStep = <?php echo $step; ?>;
+        
+        // Si no es edición y estamos en el paso 2, no dejamos volver al 1
+        if (!isEdicion && currentStep === 2 && tab === 'datos') return;
+
+        const secDatos = document.getElementById('section-datos');
+        const secComodidades = document.getElementById('section-comodidades');
+        const btn1 = document.getElementById('btn-tab-1');
+        const btn2 = document.getElementById('btn-tab-2');
+
+        if (tab === 'datos') {
+            secDatos.classList.remove('hidden');
+            secComodidades.classList.add('hidden');
+            btn1.classList.add('active');
+            btn2.classList.remove('active');
+        } else {
+            secDatos.classList.add('hidden');
+            secComodidades.classList.remove('hidden');
+            btn1.classList.remove('active');
+            btn2.classList.add('active');
+        }
+    }
+</script>
 
 </body>
 </html>
