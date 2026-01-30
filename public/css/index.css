@@ -330,8 +330,14 @@ hr {
 /* Layout */
 .main-container {
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 20px auto;
   padding: 20px;
+}
+
+.main-container h2 {
+  font-family: "Anton", sans-serif;
+  font-weight: 500;
+  font-size: 28px;
 }
 
 /* Alerts */
