@@ -45,10 +45,11 @@ if ($step == 2) {
 <head>
     <meta charset="UTF-8">
     <title><?php echo $tituloPagina; ?></title>
-    <link rel="stylesheet" href="../public/css/style.css">
+    <!-- <link rel="stylesheet" href="../public/css/styles.css?v=<?php echo time(); ?>"> -->
     <link rel="stylesheet" href="../public/css/formulario_propiedad.css?v=<?php echo time(); ?>">
 </head>
 <body>
+
 
 <div class="container">
     <header class="page-header">
