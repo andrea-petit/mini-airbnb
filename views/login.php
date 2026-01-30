@@ -27,8 +27,16 @@ if (empty($_SESSION['csrf_token'])) {
                 <div class="success-msg">Registro exitoso. ¡Bienvenido!</div>
             <?php endif; ?>
 
+            <?php if(isset($_GET['success']) && $_GET['success'] == 'registro_completo'): ?>
+                <div class="success-msg">Registro completado. Configuración de seguridad guardada correctamente.</div>
+            <?php endif; ?>
+
             <?php if(isset($_GET['msg']) && $_GET['msg'] == 'password_actualizada'): ?>
                 <div class="success-msg">Contraseña actualizada correctamente.</div>
+            <?php endif; ?>
+
+            <?php if(isset($_GET['msg']) && $_GET['msg'] == 'seguridad_configurada'): ?>
+                <div class="success-msg">Pregunta de seguridad configurada correctamente. Ya puedes iniciar sesión.</div>
             <?php endif; ?>
 
             <?php if(isset($_GET['error'])): ?>
