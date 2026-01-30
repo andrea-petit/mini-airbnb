@@ -1,14 +1,14 @@
 -> verificar inputs /veronika
 -> mas datos en el login para conectar con api de whastapp /veronika
 -> al editar propiedad se elimina la imagen puesta anteriormente /veronika
-
--> detalles de las propiedades / andrea
 -> lo de los colores de los calendarios los va a hacer ANDRES
 
 
 
 
 LISTO
+-> traerse las comodidades de la base de datos y mostrarlas en el formulario de edicion  / andrea
+-> detalles de las propiedades / andrea
 -> min y max de input dates / andrea
 -> activar buscador / andrea
 

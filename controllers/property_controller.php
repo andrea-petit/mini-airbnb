@@ -82,14 +82,17 @@ class PropertyController{
     public function actualizar_propiedad($id_propiedad, $titulo, $descripcion, $precio, $ubicacion, $archivo_foto = null) {
         $id_usuario = $this->chequear_id();
         
-        // Lógica para mantener la imagen anterior si no se sube una nueva
-        $imagen_url = null;
-        if ($archivo_foto && isset($archivo_foto['error']) && $archivo_foto['error'] === 0) {
+        $imagen_url = null; // Por defecto es null
+        
+        // Solo si el archivo es válido y no tiene errores (error === 0)
+        if ($archivo_foto && isset($archivo_foto['error']) && $archivo_foto['error'] === UPLOAD_ERR_OK) {
             $extension = pathinfo($archivo_foto['name'], PATHINFO_EXTENSION);
             $nombre_foto = time() . "_" . uniqid() . "." . $extension;
             $ruta_destino = __DIR__ . "/../public/uploads/" . $nombre_foto;
-            move_uploaded_file($archivo_foto['tmp_name'], $ruta_destino);
-            $imagen_url = $nombre_foto;
+            
+            if (move_uploaded_file($archivo_foto['tmp_name'], $ruta_destino)) {
+                $imagen_url = $nombre_foto;
+            }
         }
 
         $actualizado = $this->modelo->actualizar_propiedad($id_propiedad, $titulo, $descripcion, $precio, $ubicacion, $imagen_url, $id_usuario);

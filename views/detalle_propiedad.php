@@ -269,8 +269,6 @@ $capacidadMaxima = $p['capacidad'] ?? 5;
 
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
-    // ... Tu código JavaScript de Flatpickr y calcular() ...
-    // Asegúrate de copiar el script completo que ya tenías funcionando
     const precioNoche = <?php echo (float)$p['precio_noche']; ?>;
     const capacidadMax = <?php echo (int)$capacidadMaxima; ?>;
     const inputInicio = document.getElementById('f_inicio');

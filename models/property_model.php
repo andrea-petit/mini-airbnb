@@ -21,18 +21,30 @@ class Property {
         }
     }
 
+
     public function actualizar_propiedad($id_propiedad, $titulo, $descripcion, $precio, $ubicacion, $imagen_url, $id_usuario) {
-        $sql = "UPDATE propiedades SET titulo = ?, descripcion = ?, precio_noche = ?, ubicacion = ?, imagen_url = ? 
-                WHERE id_propiedad = ? AND id_anfitrion = ?";
+        $sql = "UPDATE propiedades SET titulo = ?, descripcion = ?, precio_noche = ?, ubicacion = ?";
+        $params = [$titulo, $descripcion, $precio, $ubicacion];
+
+        if ($imagen_url !== null) {
+            $sql .= ", imagen_url = ?";
+            $params[] = $imagen_url;
+        }
+
+        $sql .= " WHERE id_propiedad = ? AND id_anfitrion = ?";
+        $params[] = $id_propiedad;
+        $params[] = $id_usuario;
+
         $stmt = $this->db->prepare($sql);
+        
         try {
-            $stmt->execute([$titulo, $descripcion, $precio, $ubicacion, $imagen_url, $id_propiedad, $id_usuario]);
+            $stmt->execute($params);
             return true; 
         } catch (PDOException $e) {
             die("Error al actualizar propiedad: " . $e->getMessage());
         }
     }
-    
+        
     public function agregar_comodidades($id_propiedad, $comodidades){
         #Agregar las comodidades asociadas a una propiedad
         $sql = "INSERT INTO propiedad_comodidades (id_propiedad, id_comodidad) VALUES (?, ?)";
