@@ -27,6 +27,8 @@ if ($userRol === 'anfitrion') {
         $feedPropiedades = $propCtrl->feed_propiedades_disponibles() ?: [];
     }
 }
+
+
 ?>
 
 <!DOCTYPE html>
@@ -55,6 +57,7 @@ if ($userRol === 'anfitrion') {
                         </g>
                     </svg>
                     <input type="text" name="buscar" placeholder="Busca destinos..." value="<?php echo htmlspecialchars($_GET['buscar'] ?? ''); ?>">
+                    
                 </div>
             </form>
         </div>
@@ -159,4 +162,12 @@ if ($userRol === 'anfitrion') {
     </footer>
 
 </body>
+<script>
+    function validarSoloLetrasYEspacios(event) {
+    const char = String.fromCharCode(event.which);
+        if (!/[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/.test(char)) {
+            event.preventDefault();
+        }
+}
+</script>
 </html>

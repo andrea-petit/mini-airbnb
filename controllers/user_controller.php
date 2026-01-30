@@ -18,10 +18,21 @@ class UserController{
             $username= htmlspecialchars(trim($_POST['username']));
             $email= filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
             $password= $_POST['password'];
+            $nro_tlf= $_POST['nro_tlf'];
             $rol= $_POST['rol'];
 
             if(empty($username) || empty($email) || empty ($password)){
                 header("Location: ../views/registro.php?error=campos_vacios");
+                exit();
+            }
+
+            if(strlen($password) < 6){
+                header("Location: ../views/registro.php?error=contrasena_corta");
+                exit();
+            }
+
+            if(strlen($nro_tlf) != 11 ){
+                header("Location: ../views/registro.php?error=tlf_invalido");
                 exit();
             }
 
@@ -30,7 +41,14 @@ class UserController{
                 exit();
             }
 
-            $exito= $this->modelo->registrar($username, $email, $password, $rol);
+            if ($this->modelo->nro_registrado($nro_tlf)) {
+                header("Location: ../views/registro.php?error=tlf_registrado");
+                exit();
+            }
+
+
+
+            $exito= $this->modelo->registrar($username, $email, $password, $nro_tlf, $rol);
             if($exito){
                 header("Location: ../views/login.php?registro=exito");
                 exit();
