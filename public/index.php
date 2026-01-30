@@ -37,8 +37,8 @@ if ($userRol === 'anfitrion') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WindBnB - Dashboard</title>
-    <link rel="stylesheet" href="css/styles.css?v=1.0">
-    <link rel="stylesheet" href="css/index.css?v=1.0">
+    <link rel="stylesheet" href="css/styles.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="css/index.css?v=<?php echo time(); ?>">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
@@ -120,7 +120,7 @@ if ($userRol === 'anfitrion') {
                                 </div>
                                 <div class="card-body">
                                     <h3 class="card-title"><?php echo htmlspecialchars($prop['titulo']); ?></h3>
-                                    <p class="card-location"><?php echo htmlspecialchars($prop['ubicacion']); ?></p>
+                                    <p class="card-location">Ubicacion: <?php echo htmlspecialchars($prop['ubicacion']); ?></p>
                                     <p class="card-price"><strong>$<?php echo number_format($prop['precio_noche'], 2); ?></strong> / noche</p>
                                 </div>
                             </a>
