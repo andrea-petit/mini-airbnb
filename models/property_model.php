@@ -172,4 +172,28 @@ class Property {
             die("Error al obtener propiedades disponibles: " . $e->getMessage());
         }
     }
+
+    public function obtener_comodidades_seleccionadas($id_propiedad){
+        #Obtiene solo los IDs de las comodidades asociadas a una propiedad
+        $sql = "SELECT id_comodidad FROM propiedad_comodidades WHERE id_propiedad = ?";
+        $stmt = $this->db->prepare($sql);
+        try{
+            $stmt->execute([$id_propiedad]);
+            return $stmt->fetchAll(PDO::FETCH_COLUMN);
+        }catch(PDOException $e){
+            die("Error al obtener comodidades seleccionadas: " . $e->getMessage());
+        }
+    }
+
+    public function obtener_todas_las_comodidades(){
+        #Obtiene todas las comodidades disponibles en la plataforma
+        $sql = "SELECT * FROM comodidades";
+        $stmt = $this->db->prepare($sql);
+        try{
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }catch(PDOException $e){
+            die("Error al obtener todas las comodidades: " . $e->getMessage());
+        }
+    }
 }
