@@ -24,6 +24,7 @@ class User {
 
         try{
             $stmt->execute([$username, $email, $hashed_password, $rol]);
+            return true;
 
         }catch(PDOexception $e){
             die("Error al registrar usuario: " . $e->getMessage());

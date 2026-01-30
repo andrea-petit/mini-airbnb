@@ -171,4 +171,22 @@ class PropertyController{
             die("Error al obtener propiedades: " . $e->getMessage());
         }
     }
+
+    public function obtener_comodidades_seleccionadas($id_propiedad){
+        try{
+            return $this->modelo->obtener_comodidades_seleccionadas($id_propiedad);
+        }catch(Exception $e){
+            die("Error al obtener comodidades: " . $e->getMessage());
+        }
+        
+    }
+
+    public function obtener_todas_las_comodidades(){
+        try{
+            return $this->modelo->obtener_todas_las_comodidades();
+        }catch(Exception $e){
+            die("Error al obtener comodidades: " . $e->getMessage());
+        }
+        
+    }
 }
