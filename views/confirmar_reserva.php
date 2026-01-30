@@ -60,7 +60,8 @@ if (!empty($errors)) {
     <head>
         <meta charset="utf-8">
         <title>Errores en el formulario</title>
-        <link rel="stylesheet" href="../public/css/style.css">
+        <link rel="stylesheet" href="../public/css/styles.css?v=<?php echo time(); ?>">
+        <link rel="stylesheet" href="../public/css/confirmar_reserva.css?v=<?php echo time(); ?>">
     </head>
     <body>
     <div class="container" style="max-width:600px;margin:40px auto;padding:20px;border:1px solid #ddd;border-radius:8px;">
@@ -83,6 +84,7 @@ $noches = $d1->diff($d2)->days;
 <html lang="es">
 <head>
     <title>Confirmar y Pagar</title>
+    <link rel="stylesheet" href="../public/css/styles.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="../public/css/confirmar_reserva.css?v=<?php echo time(); ?>">
 </head>
 <body>
@@ -106,11 +108,11 @@ $noches = $d1->diff($d2)->days;
                     <div class="card-fields-row">
                         <div class="card-field">
                             <label>Caducidad</label>
-                            <input type="text" placeholder="MM/YY" required>
+                            <input type="text" placeholder="MM/YY" required maxlength="4">
                         </div>
                         <div class="card-field">
                             <label>CVV</label>
-                            <input type="password" placeholder="123" pattern="\d{3}" required>
+                            <input type="password" placeholder="123" pattern="\d{3}" required maxlength="3">
                         </div>
                     </div>
                 </div>
