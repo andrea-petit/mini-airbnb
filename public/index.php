@@ -34,101 +34,117 @@ if ($userRol === 'anfitrion') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Airbnb Clone - Dashboard</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/index.css">
+    <title>WindBnB - Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css?v=1.0">
+    <link rel="stylesheet" href="css/index.css?v=1.0">
 </head>
 <body>
 
-    <nav style="display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; background: #fff; border-bottom: 1px solid #ddd; position: sticky; top: 0; z-index: 1000;">
-        <div class="logo">
-            <a href="index.php" style="color: #ff385c; font-size: 1.5rem; font-weight: bold; text-decoration: none;">AirbnbClone</a>
+    <nav class="navbar">
+        <div class="logo-container">
+            <a href="index.php" class="nav-logo"> <span style="color: #1C726E;">Wind</span>BnB</a>
         </div>
         
-        <div class="user-info">
-            <span>Hola, <strong><?php echo htmlspecialchars($userName); ?></strong></span>
-            <span style="margin: 0 10px; color: #ddd;">|</span>
-            <a href="index.php" style="text-decoration: none; color: #444;">Inicio</a>
-            <a href="../views/mis_reservas.php" style="text-decoration: none; color: #444; margin-left: 15px;">Mis Reservas</a>
-            
+        <?php if ($userRol === 'huesped'): ?>
+        <div class="nav-search">
+            <form action="index.php" method="GET">
+                <div class="search-input-group">
+                    <svg class="search-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false">
+                        <g fill="none">
+                            <path d="m13 24c6.0751322 0 11-4.9248678 11-11 0-6.07513225-4.9248678-11-11-11-6.07513225 0-11 4.92486775-11 11 0 6.0751322 4.92486775 11 11 11zm8-3 9 9"></path>
+                        </g>
+                    </svg>
+                    <input type="text" name="buscar" placeholder="Busca destinos..." value="<?php echo htmlspecialchars($_GET['buscar'] ?? ''); ?>">
+                </div>
+            </form>
+        </div>
+        <?php endif; ?>
+        
+        <div class="nav-right">
             <?php if ($userRol === 'anfitrion'): ?>
-                <a href="../views/formulario_propiedad.php" style="background:#ff385c; color:white; padding:10px 20px; border-radius:8px; text-decoration:none; margin-left: 15px;">Anunciar propiedad</a>
+                <a href="../views/formulario_propiedad.php" class="nav-host-link">Modo Anfitrión</a>
             <?php endif; ?>
-            
-            <a href="../actions/user_actions.php?action=logout" style="color:#ff385c; margin-left:15px; text-decoration: none; font-weight: bold;">Salir</a>
+
+            <div class="user-menu-pill">
+                <div class="hamburger-icon">
+                    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: none; height: 16px; width: 16px; stroke: currentcolor; stroke-width: 3; overflow: visible;"><g fill="none" fill-rule="nonzero"><path d="m2 16h28"></path><path d="m2 24h28"></path><path d="m2 8h28"></path></g></svg>
+                </div>
+                <div class="user-avatar">
+                   <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; height: 30px; width: 30px; fill: currentcolor;"><path d="m16 .7c-8.437 0-15.3 6.863-15.3 15.3s6.863 15.3 15.3 15.3 15.3-6.863 15.3-15.3-6.863-15.3-15.3-15.3zm0 28c-4.021 0-7.605-1.884-9.933-4.81a12.425 12.425 0 0 1 6.451-4.4 6.507 6.507 0 0 1 -3.018-5.49c0-3.584 2.916-6.5 6.5-6.5s6.5 2.916 6.5 6.5a6.513 6.513 0 0 1 -3.019 5.491 12.42 12.42 0 0 1 6.452 4.4c-2.328 2.925-5.912 4.809-9.933 4.809z"></path></svg>
+                </div>
+                
+                <div class="user-dropdown">
+                    <div class="dropdown-header">Hola, <strong><?php echo htmlspecialchars($userName); ?></strong></div>
+                    <hr>
+                    <a href="index.php" class="dropdown-item">Inicio</a>
+                    <a href="../views/mis_reservas.php" class="dropdown-item">Mis Viajes</a>
+                    <hr>
+                    <a href="../actions/user_actions.php?action=logout" class="dropdown-item text-danger">Cerrar Sesión</a>
+                </div>
+            </div>
         </div>
     </nav>
 
-    <main class="container" style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+    <main class="container main-container">
         
         <?php if (isset($_GET['success'])): ?>
-            <div style="background: #d4edda; color: #155724; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #c3e6cb;">
+            <div class="alert-success">
                 ¡Operación realizada con éxito!
             </div>
         <?php endif; ?>
 
-        <?php if ($userRol === 'huesped'): ?>
-            <section class="search-container">
-                <form action="index.php" method="GET">
-                    <div class="search-input-group">
-                        <input type="text" name="buscar" placeholder="Busca por título o ubicación..." value="<?php echo htmlspecialchars($_GET['buscar'] ?? ''); ?>">
-                        <button type="submit" class="btn-search">Buscar</button>
-                    </div>
-                    <?php if (!empty($_GET['buscar'])): ?>
-                        <a href="index.php" class="btn-clear">Limpiar filtros</a>
-                    <?php endif; ?>
-                </form>
-            </section>
+        <?php if ($userRol === 'huesped' && !empty($_GET['buscar'])): ?>
+            <div style="text-align: center; margin: 20px 0;">
+                <a href="index.php" class="btn-clear">Borrar filtros</a>
+            </div>
+        <?php endif; ?>
 
+        <?php if ($userRol === 'huesped'): ?>
             <section>
                 <h2><?php echo !empty($_GET['buscar']) ? 'Resultados de la búsqueda' : 'Alojamientos Disponibles'; ?></h2>
                 
                 <?php if (empty($feedPropiedades)): ?>
-                    <div style="text-align: center; padding: 50px; color: #717171;">
-                        <p style="font-size: 1.2em;">No encontramos alojamientos que coincidan con tu búsqueda.</p>
-                        <a href="index.php" style="color: #ff385c;">Ver todas las propiedades</a>
+                    <div class="empty-state">
+                        <p>No se encontraron propiedades.</p>
                     </div>
                 <?php else: ?>
                     <div class="grid">
-                        <?php foreach ($feedPropiedades as $p): ?>
-                            <div class="card" onclick="location.href='../views/detalle_propiedad.php?id=<?php echo $p['id_propiedad']; ?>'" style="border: 1px solid #eee; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-                                <div style="position: relative;">
-                                    <img src="../public/uploads/<?php echo $p['imagen_url']; ?>" style="width: 100%; height: 220px; object-fit: cover;">
+                        <?php foreach ($feedPropiedades as $prop): ?>
+                            <a href="../views/detalle_propiedad.php?id=<?php echo $prop['id_propiedad']; ?>" class="card">
+                                <div class="card-img-container">
+                                    <img src="../public/uploads/<?php echo htmlspecialchars($prop['imagen_url']); ?>" alt="<?php echo htmlspecialchars($prop['titulo']); ?>" class="card-img">
                                 </div>
-                                <div style="padding: 15px;">
-                                    <h3 style="margin: 0 0 5px 0; font-size: 1.1em;"><?php echo htmlspecialchars($p['titulo']); ?></h3>
-                                    <p style="color: #717171; margin: 0 0 10px 0; font-size: 0.9em;"><?php echo htmlspecialchars($p['ubicacion']); ?></p>
-                                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                                        <strong>$<?php echo number_format($p['precio_noche'], 2); ?> <span style="font-weight: normal; color: #717171;">/ noche</span></strong>
-                                    </div>
+                                <div class="card-body">
+                                    <h3 class="card-title"><?php echo htmlspecialchars($prop['titulo']); ?></h3>
+                                    <p class="card-location"><?php echo htmlspecialchars($prop['ubicacion']); ?></p>
+                                    <p class="card-price"><strong>$<?php echo number_format($prop['precio_noche'], 2); ?></strong> / noche</p>
                                 </div>
-                            </div>
+                            </a>
                         <?php endforeach; ?>
                     </div>
                 <?php endif; ?>
             </section>
-
         <?php else: ?>
             <section>
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <div class="section-header">
                     <h2>Mis Propiedades Anunciadas</h2>
-                    <span style="color: #717171;"><?php echo count($misPropiedades); ?> propiedades activas</span>
+                    <span class="text-count"><?php echo count($misPropiedades); ?> propiedades activas</span>
                 </div>
 
                 <?php if (empty($misPropiedades)): ?>
-                    <div style="border: 2px dashed #ddd; padding: 40px; text-align: center; border-radius: 15px;">
+                    <div class="empty-state-host">
                         <p>Aún no has publicado ninguna propiedad.</p>
-                        <a href="../views/formulario_propiedad.php" style="color: #ff385c; font-weight: bold;">Empieza a ganar dinero ahora</a>
+                        <a href="../views/formulario_propiedad.php" class="link-highlight-bold">Empieza a ganar dinero ahora</a>
                     </div>
                 <?php else: ?>
                     <div class="grid">
                         <?php foreach ($misPropiedades as $p): ?>
-                            <div class="card" style="border: 1px solid #ddd; padding: 10px; border-radius: 12px; background: #fff;">
-                                <img src="../public/uploads/<?php echo $p['imagen_url']; ?>" style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;">
-                                <h3 style="font-size: 1em; margin: 0 0 10px 0;"><?php echo htmlspecialchars($p['titulo']); ?></h3>
-                                <div style="display: flex; gap: 8px;">
-                                    <a href="../views/formulario_propiedad.php?id=<?php echo $p['id_propiedad']; ?>" style="flex: 1; text-align: center; padding: 8px; background: #f7f7f7; border-radius: 6px; text-decoration: none; color: #333; font-size: 0.9em; border: 1px solid #ddd;">Editar</a>
-                                    <button onclick="if(confirm('¿Estás seguro de que quieres eliminar esta propiedad?')) location.href='../actions/property_actions.php?action=eliminar&id=<?php echo $p['id_propiedad']; ?>'" style="flex: 1; padding: 8px; background: #fff; border: 1px solid #ff385c; color: #ff385c; border-radius: 6px; cursor: pointer; font-size: 0.9em;">Eliminar</button>
+                            <div class="card host-card">
+                                <img src="../public/uploads/<?php echo $p['imagen_url']; ?>" class="host-card-img">
+                                <h3 class="host-card-title"><?php echo htmlspecialchars($p['titulo']); ?></h3>
+                                <div class="host-actions">
+                                    <a href="../views/formulario_propiedad.php?id=<?php echo $p['id_propiedad']; ?>" class="btn-action-edit">Editar</a>
+                                    <button onclick="if(confirm('¿Estás seguro de que quieres eliminar esta propiedad?')) location.href='../actions/property_actions.php?action=eliminar&id=<?php echo $p['id_propiedad']; ?>'" class="btn-action-delete">Eliminar</button>
                                 </div>
                             </div>
                         <?php endforeach; ?>
@@ -138,7 +154,7 @@ if ($userRol === 'anfitrion') {
         <?php endif; ?>
     </main>
 
-    <footer style="margin-top: 50px; padding: 30px; border-top: 1px solid #eee; text-align: center; color: #717171; font-size: 0.9em;">
+    <footer class="main-footer">
         &copy; 2026 Airbnb Clone. Todos los derechos reservados.
     </footer>
 

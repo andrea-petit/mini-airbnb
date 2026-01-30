@@ -23,11 +23,41 @@ if ($userRol === 'anfitrion') {
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <?php $userName = $_SESSION['user_name'] ?? 'Usuario'; ?>
     <title><?php echo $titulo; ?></title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../public/css/styles.css?v=1.0">
+    <link rel="stylesheet" href="../public/css/index.css?v=1.0">
 </head>
 <body>
-    <nav> <a href="../public/index.php">← Volver al Inicio</a> </nav>
+    <nav class="navbar">
+        <div class="logo-container">
+            <a href="../public/index.php" class="nav-logo">WindBnB</a>
+        </div>
+        
+        <div class="nav-right">
+            <?php if ($userRol === 'anfitrion'): ?>
+                <a href="formulario_propiedad.php" class="nav-host-link">Modo Anfitrión</a>
+            <?php endif; ?>
+
+            <div class="user-menu-pill">
+                <div class="hamburger-icon">
+                    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: none; height: 16px; width: 16px; stroke: currentcolor; stroke-width: 3; overflow: visible;"><g fill="none" fill-rule="nonzero"><path d="m2 16h28"></path><path d="m2 24h28"></path><path d="m2 8h28"></path></g></svg>
+                </div>
+                <div class="user-avatar">
+                   <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; height: 30px; width: 30px; fill: currentcolor;"><path d="m16 .7c-8.437 0-15.3 6.863-15.3 15.3s6.863 15.3 15.3 15.3 15.3-6.863 15.3-15.3-6.863-15.3-15.3-15.3zm0 28c-4.021 0-7.605-1.884-9.933-4.81a12.425 12.425 0 0 1 6.451-4.4 6.507 6.507 0 0 1 -3.018-5.49c0-3.584 2.916-6.5 6.5-6.5s6.5 2.916 6.5 6.5a6.513 6.513 0 0 1 -3.019 5.491 12.42 12.42 0 0 1 6.452 4.4c-2.328 2.925-5.912 4.809-9.933 4.809z"></path></svg>
+                </div>
+                
+                <div class="user-dropdown">
+                    <div class="dropdown-header">Hola, <strong><?php echo htmlspecialchars($userName); ?></strong></div>
+                    <hr>
+                    <a href="../public/index.php" class="dropdown-item">Inicio</a>
+                    <a href="mis_reservas.php" class="dropdown-item">Mis Viajes</a>
+                    <hr>
+                    <a href="../actions/user_actions.php?action=logout" class="dropdown-item text-danger">Cerrar Sesión</a>
+                </div>
+            </div>
+        </div>
+    </nav>
     
     <main class="container" style="padding: 20px;">
         <h1><?php echo $titulo; ?></h1>

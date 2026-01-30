@@ -33,8 +33,10 @@ $tituloPagina = $esEdicion ? "Gestionar Propiedad" : "Publicar Nueva Propiedad";
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <?php $userName = $_SESSION['user_name'] ?? 'Usuario'; ?>
     <title><?php echo $tituloPagina; ?></title>
-    <link rel="stylesheet" href="../public/css/style.css">
+    <link rel="stylesheet" href="../public/css/styles.css?v=1.0">
+    <link rel="stylesheet" href="../public/css/index.css?v=1.0">
     <style>
         .card-form {
             background: #fff;
@@ -50,7 +52,7 @@ $tituloPagina = $esEdicion ? "Gestionar Propiedad" : "Publicar Nueva Propiedad";
             gap: 15px;
             margin: 20px 0;
         }
-        .section-header {
+        .section-header-form {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -79,15 +81,40 @@ $tituloPagina = $esEdicion ? "Gestionar Propiedad" : "Publicar Nueva Propiedad";
 </head>
 <body style="background: #fbfbfb; font-family: sans-serif;">
 
+    <nav class="navbar">
+        <div class="logo-container">
+            <a href="../public/index.php" class="nav-logo">WindBnB</a>
+        </div>
+        
+        <div class="nav-right">
+            <div class="user-menu-pill">
+                <div class="hamburger-icon">
+                    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: none; height: 16px; width: 16px; stroke: currentcolor; stroke-width: 3; overflow: visible;"><g fill="none" fill-rule="nonzero"><path d="m2 16h28"></path><path d="m2 24h28"></path><path d="m2 8h28"></path></g></svg>
+                </div>
+                <div class="user-avatar">
+                   <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; height: 30px; width: 30px; fill: currentcolor;"><path d="m16 .7c-8.437 0-15.3 6.863-15.3 15.3s6.863 15.3 15.3 15.3 15.3-6.863 15.3-15.3-6.863-15.3-15.3-15.3zm0 28c-4.021 0-7.605-1.884-9.933-4.81a12.425 12.425 0 0 1 6.451-4.4 6.507 6.507 0 0 1 -3.018-5.49c0-3.584 2.916-6.5 6.5-6.5s6.5 2.916 6.5 6.5a6.513 6.513 0 0 1 -3.019 5.491 12.42 12.42 0 0 1 6.452 4.4c-2.328 2.925-5.912 4.809-9.933 4.809z"></path></svg>
+                </div>
+                
+                <div class="user-dropdown">
+                    <div class="dropdown-header">Hola, <strong><?php echo htmlspecialchars($userName); ?></strong></div>
+                    <hr>
+                    <a href="../public/index.php" class="dropdown-item">Inicio</a>
+                    <a href="mis_reservas.php" class="dropdown-item">Mis Viajes</a>
+                    <hr>
+                    <a href="../actions/user_actions.php?action=logout" class="dropdown-item text-danger">Cerrar Sesión</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
 <div class="container" style="max-width: 800px; margin: 40px auto; padding: 0 20px;">
     
     <header style="margin-bottom: 30px;">
-        <a href="../public/index.php" style="color: #ff385c; text-decoration: none;">← Volver al inicio</a>
         <h1 style="margin-top: 10px;"><?php echo $tituloPagina; ?></h1>
     </header>
 
     <section class="card-form">
-        <div class="section-header">
+        <div class="section-header-form">
             <h2 style="margin:0; font-size: 1.3em;">1. Datos Generales</h2>
             <?php if ($esEdicion): ?>
                 <span style="background: #e7f3ff; color: #1877f2; padding: 4px 10px; border-radius: 20px; font-size: 0.8em;">Editando ID: #<?php echo $propiedad['id_propiedad']; ?></span>
@@ -141,7 +168,7 @@ $tituloPagina = $esEdicion ? "Gestionar Propiedad" : "Publicar Nueva Propiedad";
     </section>
 
     <section class="card-form" <?php echo !$esEdicion ? 'style="opacity: 0.5; pointer-events: none;"' : ''; ?>>
-        <div class="section-header">
+        <div class="section-header-form">
             <h2 style="margin:0; font-size: 1.3em;">2. Comodidades y Servicios</h2>
             <?php if (!$esEdicion): ?>
                 <small style="color: #ff385c;">* Primero guarda los datos básicos</small>
