@@ -40,7 +40,7 @@ if (empty($_SESSION['csrf_token'])) {
                 </div>
             <?php endif; ?>
 
-            <h3>Iniciar sesión o registrarse</h3>
+            <h3>Iniciar sesión</h3>
 
             <form action="../actions/user_actions.php?action=login" method="POST">
                 <div class="form-group">

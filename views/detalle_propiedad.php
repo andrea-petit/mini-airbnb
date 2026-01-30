@@ -28,6 +28,7 @@ $capacidadMaxima = $p['capacidad'] ?? 5;
     <title><?php echo htmlspecialchars($p['titulo']); ?> - Detalles</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <style>
         :root {
@@ -291,7 +292,12 @@ $capacidadMaxima = $p['capacidad'] ?? 5;
             const noches = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
             
             if (noches > 30) {
-                alert("La estancia máxima es de 30 noches.");
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Estancia máxima excedida',
+                    text: 'La estancia máxima es de 30 noches.',
+                    confirmButtonColor: '#ff385c'
+                });
                 fpEnd.clear();
                 actualizarEstadoBoton(false);
                 return;
@@ -399,7 +405,12 @@ $capacidadMaxima = $p['capacidad'] ?? 5;
     document.getElementById('reservaForm').addEventListener('submit', (e) => {
         if (btnSubmit.disabled) {
             e.preventDefault();
-            alert("Seleccione fechas válidas.");
+            Swal.fire({
+                icon: 'error',
+                title: 'Fechas inválidas',
+                text: 'Por favor, seleccione fechas válidas para continuar.',
+                confirmButtonColor: '#ff385c'
+            });
         }
     });
 

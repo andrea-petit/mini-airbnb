@@ -39,6 +39,7 @@ if ($userRol === 'anfitrion') {
     <title>WindBnB - Dashboard</title>
     <link rel="stylesheet" href="css/styles.css?v=1.0">
     <link rel="stylesheet" href="css/index.css?v=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -65,7 +66,7 @@ if ($userRol === 'anfitrion') {
         
         <div class="nav-right">
             <?php if ($userRol === 'anfitrion'): ?>
-                <a href="../views/formulario_propiedad.php" class="nav-host-link">Modo Anfitrión</a>
+                <a href="../views/formulario_propiedad.php" class="nav-host-link">Añadir Propiedad</a>
             <?php endif; ?>
 
             <div class="user-menu-pill">
@@ -73,7 +74,7 @@ if ($userRol === 'anfitrion') {
                     <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; fill: none; height: 16px; width: 16px; stroke: currentcolor; stroke-width: 3; overflow: visible;"><g fill="none" fill-rule="nonzero"><path d="m2 16h28"></path><path d="m2 24h28"></path><path d="m2 8h28"></path></g></svg>
                 </div>
                 <div class="user-avatar">
-                   <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; height: 30px; width: 30px; fill: currentcolor;"><path d="m16 .7c-8.437 0-15.3 6.863-15.3 15.3s6.863 15.3 15.3 15.3 15.3-6.863 15.3-15.3-6.863-15.3-15.3-15.3zm0 28c-4.021 0-7.605-1.884-9.933-4.81a12.425 12.425 0 0 1 6.451-4.4 6.507 6.507 0 0 1 -3.018-5.49c0-3.584 2.916-6.5 6.5-6.5s6.5 2.916 6.5 6.5a6.513 6.513 0 0 1 -3.019 5.491 12.42 12.42 0 0 1 6.452 4.4c-2.328 2.925-5.912 4.809-9.933 4.809z"></path></svg>
+                    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; height: 30px; width: 30px; fill: currentcolor;"><path d="m16 .7c-8.437 0-15.3 6.863-15.3 15.3s6.863 15.3 15.3 15.3 15.3-6.863 15.3-15.3-6.863-15.3-15.3-15.3zm0 28c-4.021 0-7.605-1.884-9.933-4.81a12.425 12.425 0 0 1 6.451-4.4 6.507 6.507 0 0 1 -3.018-5.49c0-3.584 2.916-6.5 6.5-6.5s6.5 2.916 6.5 6.5a6.513 6.513 0 0 1 -3.019 5.491 12.42 12.42 0 0 1 6.452 4.4c-2.328 2.925-5.912 4.809-9.933 4.809z"></path></svg>
                 </div>
                 
                 <div class="user-dropdown">
@@ -147,7 +148,7 @@ if ($userRol === 'anfitrion') {
                                 <h3 class="host-card-title"><?php echo htmlspecialchars($p['titulo']); ?></h3>
                                 <div class="host-actions">
                                     <a href="../views/formulario_propiedad.php?id=<?php echo $p['id_propiedad']; ?>" class="btn-action-edit">Editar</a>
-                                    <button onclick="if(confirm('¿Estás seguro de que quieres eliminar esta propiedad?')) location.href='../actions/property_actions.php?action=eliminar&id=<?php echo $p['id_propiedad']; ?>'" class="btn-action-delete">Eliminar</button>
+                                    <button onclick="confirmDelete(<?php echo $p['id_propiedad']; ?>)" class="btn-action-delete">Eliminar</button>
                                 </div>
                             </div>
                         <?php endforeach; ?>
@@ -160,6 +161,25 @@ if ($userRol === 'anfitrion') {
     <footer class="main-footer">
         &copy; 2026 WindBnB. Todos los derechos reservados.
     </footer>
+
+    <script>
+    function confirmDelete(propertyId) {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "Esta acción no se puede deshacer",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ff385c',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                location.href = '../actions/property_actions.php?action=eliminar&id=' + propertyId;
+            }
+        });
+    }
+    </script>
 
 </body>
 <script>

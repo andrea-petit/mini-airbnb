@@ -27,16 +27,17 @@ if ($userRol === 'anfitrion') {
     <title><?php echo $titulo; ?></title>
     <link rel="stylesheet" href="../public/css/styles.css?v=1.0">
     <link rel="stylesheet" href="../public/css/index.css?v=1.0">
+    <link rel="stylesheet" href="../public/css/reservas.css?v=1.0">
 </head>
 <body>
     <nav class="navbar">
         <div class="logo-container">
-            <a href="../public/index.php" class="nav-logo">WindBnB</a>
+            <a href="../public/index.php" class="nav-logo"> <span style="color: #1C726E;">Wind</span>BnB</a>
         </div>
         
         <div class="nav-right">
             <?php if ($userRol === 'anfitrion'): ?>
-                <a href="formulario_propiedad.php" class="nav-host-link">Modo Anfitrión</a>
+                <a href="formulario_propiedad.php" class="nav-host-link">Añadir Propiedad</a>
             <?php endif; ?>
 
             <div class="user-menu-pill">
@@ -59,59 +60,81 @@ if ($userRol === 'anfitrion') {
         </div>
     </nav>
     
-    <main class="container" style="padding: 20px;">
-        <h1><?php echo $titulo; ?></h1>
+    <main class="reservations-container">
+        <div class="reservations-header">
+            <h1><?php echo $titulo; ?></h1>
+            <p class="reservations-count"><?php echo count($reservas); ?> <?php echo count($reservas) === 1 ? 'reserva' : 'reservas'; ?></p>
+        </div>
 
-        <table border="1" style="width:100%; border-collapse: collapse; margin-top: 20px;">
-            <thead style="background: #f8f8f8;">
-                <tr>
-                    <th>Propiedad</th>
-                    <th><?php echo ($userRol === 'anfitrion') ? "Huésped" : "Ubicación"; ?></th>
-                    <th>Fechas</th>
-                    <th>Total</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
+        <?php if (empty($reservas)): ?>
+            <div class="empty-reservations">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/>
+                </svg>
+                <h3>No tienes reservas</h3>
+                <p><?php echo $userRol === 'anfitrion' ? 'Aún no has recibido ninguna reserva.' : 'Comienza a explorar y reserva tu próximo viaje.'; ?></p>
+            </div>
+        <?php else: ?>
+            <div class="reservations-grid">
                 <?php foreach ($reservas as $r): ?>
-                <tr>
-                    <td><?php echo htmlspecialchars($r['titulo_propiedad']); ?></td>
-                    <td><?php echo ($userRol === 'anfitrion') ? htmlspecialchars($r['nombre_huesped']) : htmlspecialchars($r['ubicacion_propiedad']); ?></td>
-                    <td><?php echo $r['fecha_inicio'] . " al " . $r['fecha_fin']; ?></td>
-                    <td><strong>$<?php echo number_format($r['precio_total'], 2); ?></strong></td>
-                    <td>
-                        <span style="padding: 4px 8px; border-radius: 4px; background: <?php echo ($r['estado']=='pendiente' ? '#fff3cd' : ($r['estado']=='confirmada' ? '#d4edda' : '#f8d7da')); ?>">
-                            <?php echo ucfirst($r['estado']); ?>
-                        </span>
-                    </td>
-                    <td>
-                        <?php if ($r['estado'] === 'pendiente'): ?>
-                            <?php if ($userRol === 'anfitrion'): ?>
-                                <form action="../actions/reserva_actions.php?action=confirmar" method="POST" style="display:inline;">
-                                    <input type="hidden" name="id_reserva" value="<?php echo $r['id_reserva']; ?>">
-                                    <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
-                                    <button type="submit" style="background:green; color:white;">Aceptar</button>
-                                </form>
+                    <div class="reservation-card">
+                        <div class="reservation-card-header">
+                            <div class="reservation-property">
+                                <h3 class="reservation-property-title"><?php echo htmlspecialchars($r['titulo_propiedad']); ?></h3>
+                                <p class="reservation-property-location">
+                                    <?php echo $userRol === 'anfitrion' 
+                                        ? 'Huésped: ' . htmlspecialchars($r['nombre_huesped']) 
+                                        : htmlspecialchars($r['ubicacion_propiedad']); ?>
+                                </p>
+                            </div>
+                            <span class="status-badge <?php echo $r['estado']; ?>">
+                                <?php echo ucfirst($r['estado']); ?>
+                            </span>
+                        </div>
+
+                        <div class="reservation-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Fechas</span>
+                                <span class="detail-value"><?php echo date('d M', strtotime($r['fecha_inicio'])); ?> - <?php echo date('d M Y', strtotime($r['fecha_fin'])); ?></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Total</span>
+                                <span class="detail-value price">$<?php echo number_format($r['precio_total'], 2); ?></span>
+                            </div>
+                        </div>
+
+                        <div class="reservation-actions">
+                            <?php if ($r['estado'] === 'pendiente'): ?>
+                                <?php if ($userRol === 'anfitrion'): ?>
+                                    <form action="../actions/reserva_actions.php?action=confirmar" method="POST" style="display:inline;">
+                                        <input type="hidden" name="id_reserva" value="<?php echo $r['id_reserva']; ?>">
+                                        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+                                        <button type="submit" class="btn-reservation btn-accept">Aceptar</button>
+                                    </form>
+                                    <form action="../actions/reserva_actions.php?action=cancelar" method="POST" style="display:inline;">
+                                        <input type="hidden" name="id_reserva" value="<?php echo $r['id_reserva']; ?>">
+                                        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+                                        <button type="submit" class="btn-reservation btn-reject">Rechazar</button>
+                                    </form>
+                                <?php else: ?>
+                                    <form action="../actions/reserva_actions.php?action=cancelar" method="POST" style="display:inline;">
+                                        <input type="hidden" name="id_reserva" value="<?php echo $r['id_reserva']; ?>">
+                                        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+                                        <button type="submit" class="btn-reservation btn-cancel">Cancelar Reserva</button>
+                                    </form>
+                                <?php endif; ?>
+                            <?php else: ?>
+                                <button class="btn-reservation btn-disabled" disabled>Sin acciones disponibles</button>
                             <?php endif; ?>
                             
-                            <form action="../actions/reserva_actions.php?action=cancelar" method="POST" style="display:inline;">
-                                <input type="hidden" name="id_reserva" value="<?php echo $r['id_reserva']; ?>">
-                                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
-                                <button type="submit" style="background:red; color:white;">
-                                    <?php echo ($userRol === 'anfitrion') ? "Rechazar" : "Cancelar"; ?>
-                                </button>
-                            </form>
-                        <?php else: ?>
-                            <button disabled>Sin acciones</button>
-                        <?php endif; ?>
-                        
-                        <button onclick="window.open('https://wa.me/<?php echo htmlspecialchars($r['telefono_huesped']); ?>?text=Hola%20<?php echo htmlspecialchars($r['nombre_huesped']); ?>,%20te%20contacto%20por%20la%20reserva%20de%20la%20propiedad%20<?php echo htmlspecialchars($r['titulo_propiedad']); ?>.', '_blank')" style="background: #007bff; color:white;">Enviar Mensaje</button>
-                    </td>
-                </tr>
+                            <button onclick="window.open('https://wa.me/<?php echo htmlspecialchars($r['telefono_huesped']); ?>?text=Hola%20<?php echo htmlspecialchars($r['nombre_huesped']); ?>,%20te%20contacto%20por%20la%20reserva%20de%20la%20propiedad%20<?php echo htmlspecialchars($r['titulo_propiedad']); ?>.', '_blank')" class="btn-reservation btn-message">
+                                Enviar Mensaje
+                            </button>
+                        </div>
+                    </div>
                 <?php endforeach; ?>
-            </tbody>
-        </table>
+            </div>
+        <?php endif; ?>
     </main>
 </body>
 </html>
