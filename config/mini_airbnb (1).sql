@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 29-01-2026 a las 23:39:20
+-- Tiempo de generación: 30-01-2026 a las 20:36:31
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -67,8 +67,7 @@ CREATE TABLE `propiedades` (
 --
 
 INSERT INTO `propiedades` (`id_propiedad`, `id_anfitrion`, `titulo`, `descripcion`, `precio_noche`, `ubicacion`, `imagen_url`, `capacidad`, `disponible`) VALUES
-(1, 3, 'Mi casa', 'sisisisisisiisis', 70.00, 'puerta maraven', '1769723661_697bd70d1c6ce.jpg', 5, 1),
-(3, 3, 'Nueva Casa', 'asquerosidad', 80.00, 'Falcon', '1769725077_697bdc9545901.jpg', 15, 1);
+(10, 8, 'Mi casa', 'mi casa a la venta. SI', 100.00, 'La Puerta Maraven', '1769797483_697cf76b4b9f3.jpeg', 10, 1);
 
 -- --------------------------------------------------------
 
@@ -86,12 +85,8 @@ CREATE TABLE `propiedad_comodidades` (
 --
 
 INSERT INTO `propiedad_comodidades` (`id_propiedad`, `id_comodidad`) VALUES
-(3, 1),
-(3, 2),
-(3, 3),
-(3, 4),
-(3, 5),
-(3, 6);
+(10, 1),
+(10, 6);
 
 -- --------------------------------------------------------
 
@@ -116,11 +111,8 @@ CREATE TABLE `reservas` (
 --
 
 INSERT INTO `reservas` (`id_reserva`, `id_propiedad`, `id_huesped`, `fecha_inicio`, `fecha_fin`, `precio_total`, `cant_huespedes`, `estado`, `creado_en`) VALUES
-(1, 1, 1, '2026-01-26', '2026-01-30', 0.00, 3, 'cancelada', '2026-01-26 22:19:37'),
-(3, 1, 1, '2026-01-31', '2026-02-06', 0.00, 10, 'pendiente', '2026-01-28 22:05:24'),
-(4, 1, 1, '2026-04-14', '2026-04-30', 0.00, 1, 'pendiente', '2026-01-28 22:24:30'),
-(5, 1, 1, '2026-02-07', '2026-02-14', 2450.00, 5, 'pendiente', '2026-01-29 20:15:04'),
-(6, 1, 1, '2026-02-25', '2026-02-28', 210.00, 1, 'pendiente', '2026-01-29 20:16:34');
+(7, 10, 5, '2026-01-30', '2026-01-31', 100.00, 1, 'cancelada', '2026-01-30 19:11:12'),
+(8, 10, 5, '2026-01-30', '2026-01-31', 1000.00, 10, 'cancelada', '2026-01-30 19:34:28');
 
 -- --------------------------------------------------------
 
@@ -133,6 +125,7 @@ CREATE TABLE `usuarios` (
   `username` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
+  `nro_tlf` varchar(11) NOT NULL,
   `rol` enum('anfitrion','huesped') DEFAULT 'huesped',
   `creado_en` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -141,9 +134,10 @@ CREATE TABLE `usuarios` (
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id_usuario`, `username`, `email`, `password`, `rol`, `creado_en`) VALUES
-(1, 'andrea', 'andrea@prueba.com', '$2y$10$pmInMe/rScpxcXRKBug05en9aBwaSXAZBEeT7MCc6E0jkSH87KZ22', 'huesped', '2026-01-21 02:44:11'),
-(3, 'Andres', 'andres@prueba.com', '$2y$10$I5auZ6vD.MORpoemlz.uY.1lTIpAWzVG/J5jz7c0.0tIOKpvtRO6.', 'anfitrion', '2026-01-24 19:49:58');
+INSERT INTO `usuarios` (`id_usuario`, `username`, `email`, `password`, `nro_tlf`, `rol`, `creado_en`) VALUES
+(5, 'andrea', 'andrea@prueba.com', '$2y$10$l0bjFnB2V11J/5.KO1Doa.N60WOlNJAt0/Ort8dov0AYQ3Fbp0Ea2', '04246304379', 'huesped', '2026-01-30 18:04:00'),
+(6, 'yope', 'yope@gmail.com', '$2y$10$XrctgDDF8SXJlfPj..4Yq.FHvrtPMRaENxyb0anv41VEgCn41QMgm', '4146574687', 'huesped', '2026-01-30 18:14:39'),
+(8, 'Andres', 'andres@prueba.com', '$2y$10$wo7uo2n40pO8wpCvRKfApOjMk3PKIjLehKYQbSZ576S1RgqnGTx7i', '4141234567', 'anfitrion', '2026-01-30 18:22:16');
 
 --
 -- Índices para tablas volcadas
@@ -182,7 +176,8 @@ ALTER TABLE `reservas`
 --
 ALTER TABLE `usuarios`
   ADD PRIMARY KEY (`id_usuario`),
-  ADD UNIQUE KEY `email` (`email`);
+  ADD UNIQUE KEY `email` (`email`),
+  ADD UNIQUE KEY `nro_tlf` (`nro_tlf`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -198,19 +193,19 @@ ALTER TABLE `comodidades`
 -- AUTO_INCREMENT de la tabla `propiedades`
 --
 ALTER TABLE `propiedades`
-  MODIFY `id_propiedad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_propiedad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `reservas`
 --
 ALTER TABLE `reservas`
-  MODIFY `id_reserva` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_reserva` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Restricciones para tablas volcadas

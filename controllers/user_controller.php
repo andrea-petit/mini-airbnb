@@ -21,6 +21,9 @@ class UserController{
             $nro_tlf= $_POST['nro_tlf'];
             $rol= $_POST['rol'];
 
+
+            $nro_format = substr($nro_tlf, 1);
+
             if(empty($username) || empty($email) || empty ($password)){
                 header("Location: ../views/registro.php?error=campos_vacios");
                 exit();
@@ -41,14 +44,14 @@ class UserController{
                 exit();
             }
 
-            if ($this->modelo->nro_registrado($nro_tlf)) {
+            if ($this->modelo->nro_registrado($nro_format)) {
                 header("Location: ../views/registro.php?error=tlf_registrado");
                 exit();
             }
 
 
 
-            $exito= $this->modelo->registrar($username, $email, $password, $nro_tlf, $rol);
+            $exito= $this->modelo->registrar($username, $email, $password, $nro_format, $rol);
             if($exito){
                 header("Location: ../views/login.php?registro=exito");
                 exit();

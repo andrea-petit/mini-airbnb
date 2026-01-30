@@ -120,14 +120,14 @@ if ($userRol === 'anfitrion') {
                                     <form action="../actions/reserva_actions.php?action=cancelar" method="POST" class="inline-form">
                                         <input type="hidden" name="id_reserva" value="<?php echo $r['id_reserva']; ?>">
                                         <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
-                                        <button type="submit" class="btn-reservation btn-cancel">Cancelar Reserva</button>
+                                        <button type="submit" class="btn-reservation btn-cancel" onclick="return confirm('¿Estás seguro de que deseas cancelar esta reserva?');">Cancelar Reserva</button>
                                     </form>
                                 <?php endif; ?>
                             <?php else: ?>
                                 <button class="btn-reservation btn-disabled" disabled>Sin acciones disponibles</button>
                             <?php endif; ?>
                             
-                            <button onclick="window.open('https://wa.me/<?php echo htmlspecialchars($r['telefono_huesped']); ?>?text=Hola%20<?php echo htmlspecialchars($r['nombre_huesped']); ?>,%20te%20contacto%20por%20la%20reserva%20de%20la%20propiedad%20<?php echo htmlspecialchars($r['titulo_propiedad']); ?>.', '_blank')" class="btn-reservation btn-message">
+                            <button onclick="window.open('https://wa.me/+58<?php echo htmlspecialchars($r['telefono']); ?>?text=Hola%20<?php echo htmlspecialchars($r['nombre']); ?>,%20te%20contacto%20por%20la%20reserva%20de%20la%20propiedad%20<?php echo htmlspecialchars($r['titulo_propiedad']); ?>.', '_blank')" class="btn-reservation btn-message">
                                 Enviar Mensaje
                             </button>
                         </div>

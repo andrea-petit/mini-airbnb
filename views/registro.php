@@ -35,7 +35,7 @@ if (empty($_SESSION['csrf_token'])) {
             <form action="../actions/user_actions.php?action=registrar" method="POST">
                 <div class="form-group">
                     <label>Nombre completo</label>
-                    <input type="text" name="username" required placeholder="Juan Pérez">
+                    <input type="text" name="username" required placeholder="Juan Pérez" onkeypress="validarSoloLetrasYEspacios(event)">
                 </div>
 
                 <div class="form-group">
@@ -76,6 +76,14 @@ if (empty($_SESSION['csrf_token'])) {
         </div>
     </div>
 <script>
+
+function validarSoloLetrasYEspacios(event) {
+    const char = String.fromCharCode(event.which);
+        if (!/[a-zA-ZáéíóúÁÉÍÓÚñÑ'\s]/.test(char)) {
+            event.preventDefault();
+        }
+}
+
 (function(){
     const el = document.querySelector('input[name="nro_tlf"]');
     if (!el) return;

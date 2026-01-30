@@ -101,7 +101,7 @@ $noches = $d1->diff($d2)->days;
 
                 <div class="card-input-box">
                     <label>Número de tarjeta</label>
-                    <input type="text" placeholder="0000 0000 0000 0000" pattern="\d{16}" title="16 dígitos" required>
+                    <input name="numero_tarjeta" type="text" placeholder="0000 0000 0000 0000" pattern="\d{16}" title="16 dígitos" required maxlength="16" >
                     
                     <div class="card-fields-row">
                         <div class="card-field">
@@ -168,4 +168,65 @@ $noches = $d1->diff($d2)->days;
     </div>
 </div>
 </body>
+<script>
+    (function(){
+    const el = document.querySelector('input[name="numero_tarjeta"]');
+    const ell = document.querySelector('input[name="cvv"]');
+    const elll = document.querySelector('input[placeholder="MM/YY"]');
+    if (!el) return;
+    el.addEventListener('keydown', function(e){
+        const allowed = ['Backspace','ArrowLeft','ArrowRight','Delete','Tab','Home','End'];
+        if (allowed.includes(e.key) || e.ctrlKey || e.metaKey) return;
+        if (/^\d$/.test(e.key)) return;
+        e.preventDefault();
+    });
+    el.addEventListener('input', function(){
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
+    el.addEventListener('paste', function(e){
+        const text = (e.clipboardData || window.clipboardData).getData('text');
+        const cleaned = text.replace(/[^0-9]/g, '');
+        if (cleaned !== text) {
+            e.preventDefault();
+            document.execCommand('insertText', false, cleaned);
+        }
+    });
+    if (!ell) return;
+    ell.addEventListener('keydown', function(e){
+        const allowed = ['Backspace','ArrowLeft','ArrowRight','Delete','Tab','Home','End'];
+        if (allowed.includes(e.key) || e.ctrlKey || e.metaKey) return;
+        if (/^\d$/.test(e.key)) return;
+        e.preventDefault();
+    });
+    ell.addEventListener('input', function(){
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
+    ell.addEventListener('paste', function(e){
+        const text = (e.clipboardData || window.clipboardData).getData('text');
+        const cleaned = text.replace(/[^0-9]/g, '');
+        if (cleaned !== text) {
+            e.preventDefault();
+            document.execCommand('insertText', false, cleaned);
+        }
+    });
+    if (!elll) return;
+    elll.addEventListener('keydown', function(e){
+        const allowed = ['Backspace','ArrowLeft','ArrowRight','Delete','Tab','Home','End'];
+        if (allowed.includes(e.key) || e.ctrlKey || e.metaKey) return;
+        if (/^\d$/.test(e.key)) return;
+        e.preventDefault();
+    });
+    elll.addEventListener('input', function(){
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
+    elll.addEventListener('paste', function(e){
+        const text = (e.clipboardData || window.clipboardData).getData('text');
+        const cleaned = text.replace(/[^0-9]/g, '');
+        if (cleaned !== text) {
+            e.preventDefault();
+            document.execCommand('insertText', false, cleaned);
+        }
+    });
+})();
+</script>
 </html>

@@ -71,9 +71,10 @@ class Reserva{
 
     public function obtener_reservas_usuario($id_usuario){
         try {
-            $sql = "SELECT r.*, p.titulo as titulo_propiedad, p.ubicacion as ubicacion_propiedad
+            $sql = "SELECT r.*, p.titulo as titulo_propiedad, p.ubicacion as ubicacion_propiedad, u.username as nombre, u.nro_tlf as telefono
             FROM reservas r 
             JOIN propiedades p ON r.id_propiedad = p.id_propiedad 
+            JOIN usuarios u ON p.id_anfitrion = u.id_usuario
             WHERE r.id_huesped = ?";
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute([$id_usuario]);
@@ -93,7 +94,7 @@ class Reserva{
     }
 
     public function obtener_reservas_anfitrion($id_anfitrion) {
-        $sql = "SELECT r.*, p.titulo AS titulo_propiedad, u.username AS nombre_huesped, u.nro_tlf AS telefono_huesped
+        $sql = "SELECT r.*, p.titulo AS titulo_propiedad, u.username AS nombre, u.nro_tlf AS telefono
                 FROM reservas r
                 JOIN propiedades p ON r.id_propiedad = p.id_propiedad
                 JOIN usuarios u ON r.id_huesped = u.id_usuario

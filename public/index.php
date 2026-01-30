@@ -185,7 +185,7 @@ if ($userRol === 'anfitrion') {
 <script>
     function validarSoloLetrasYEspacios(event) {
     const char = String.fromCharCode(event.which);
-        if (!/[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/.test(char)) {
+        if (!/[a-zA-ZáéíóúÁÉÍÓÚñÑ'\s]/.test(char)) {
             event.preventDefault();
         }
 }
