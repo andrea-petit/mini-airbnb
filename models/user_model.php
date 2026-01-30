@@ -44,4 +44,11 @@ class User {
             return false;
         }
     }
+
+    public function actualizar_password($email, $nueva_password) {
+        $hashed_password = password_hash($nueva_password, PASSWORD_BCRYPT);
+        $sql = "UPDATE usuarios SET password = ? WHERE email = ?";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([$hashed_password, $email]);
+    }
 }

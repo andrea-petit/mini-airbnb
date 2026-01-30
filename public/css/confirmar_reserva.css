@@ -1,0 +1,112 @@
+/* Confirmation and Payment Page Styles */
+
+.confirmation-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.confirmation-layout {
+  display: flex;
+  gap: 30px;
+}
+
+.payment-section {
+  flex: 1.5;
+}
+
+.card-input-box {
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.card-input-box input[type="text"],
+.card-input-box input[type="password"] {
+  width: 90%;
+  margin-bottom: 10px;
+}
+
+.card-fields-row {
+  display: flex;
+  gap: 10px;
+}
+
+.card-field {
+  flex: 1;
+}
+
+.card-field input {
+  width: 100%;
+}
+
+.disclaimer-text {
+  font-size: 0.8em;
+  color: #666;
+  margin-top: 15px;
+}
+
+.btn-confirm {
+  width: 100%;
+  background: #ff385c;
+  color: white;
+  padding: 15px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1em;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-confirm:hover {
+  opacity: 0.9;
+}
+
+.summary-sidebar {
+  flex: 1;
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 12px;
+  background: #fafafa;
+  position: sticky;
+  top: 20px;
+}
+
+.property-preview {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.property-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.property-title {
+  margin: 0;
+}
+
+.property-rating {
+  font-size: 0.9em;
+  color: #666;
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.price-row.subtle {
+  color: #666;
+}
+
+.price-row-total {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  font-size: 1.2em;
+}

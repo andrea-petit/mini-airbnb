@@ -43,7 +43,7 @@ if ($userRol === 'anfitrion') {
 
     <nav class="navbar">
         <div class="logo-container">
-            <a href="index.php" class="nav-logo"> <span style="color: #1C726E;">Wind</span>BnB</a>
+            <a href="index.php" class="nav-logo"> <span class="brand-highlight">Wind</span>BnB</a>
         </div>
         
         <?php if ($userRol === 'huesped'): ?>
@@ -95,7 +95,7 @@ if ($userRol === 'anfitrion') {
         <?php endif; ?>
 
         <?php if ($userRol === 'huesped' && !empty($_GET['buscar'])): ?>
-            <div style="text-align: center; margin: 20px 0;">
+            <div class="empty-state-container">
                 <a href="index.php" class="btn-clear">Borrar filtros</a>
             </div>
         <?php endif; ?>
@@ -111,7 +111,7 @@ if ($userRol === 'anfitrion') {
                 <?php else: ?>
                     <div class="grid">
                         <?php foreach ($feedPropiedades as $prop): ?>
-                            <a href="../views/detalle_propiedad.php?id=<?php echo $prop['id_propiedad']; ?>" class="card">
+                            <a href="../views/detalle_propiedad.php?id=<?php echo $prop['id_propiedad']; ?>" class="card card-link">
                                 <div class="card-img-container">
                                     <img src="../public/uploads/<?php echo htmlspecialchars($prop['imagen_url']); ?>" alt="<?php echo htmlspecialchars($prop['titulo']); ?>" class="card-img">
                                 </div>

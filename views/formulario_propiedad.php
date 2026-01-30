@@ -46,32 +46,13 @@ if ($step == 2) {
     <meta charset="UTF-8">
     <title><?php echo $tituloPagina; ?></title>
     <link rel="stylesheet" href="../public/css/style.css">
-    <style>
-        :root { --primary: #ff385c; --dark: #222; --border: #ddd; }
-        body { background: #fbfbfb; font-family: 'Segoe UI', sans-serif; color: #333; }
-        .container { max-width: 800px; margin: 40px auto; padding: 0 20px; }
-        .tabs-nav { display: flex; gap: 5px; margin-bottom: -1px; }
-        .tab-btn { 
-            padding: 12px 25px; border-radius: 12px 12px 0 0; border: 1px solid var(--border); 
-            border-bottom: none; background: #eee; font-weight: 600; color: #777;
-        }
-        .tab-btn.active { background: white; color: var(--primary); border-top: 3px solid var(--primary); }
-        .tab-btn.disabled { opacity: 0.5; cursor: not-allowed; }
-        .tab-btn.clickable { cursor: pointer; }
-        .card-form { background: #fff; padding: 30px; border-radius: 0 12px 12px 12px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px; }
-        .hidden { display: none !important; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; }
-        input, textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 15px; box-sizing: border-box; }
-        .btn-main { background: var(--primary); color: white; padding: 14px 30px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; }
-        .amenities-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin: 25px 0; }
-        .amenity-item { display: flex; align-items: center; gap: 10px; padding: 12px; border: 1px solid #eee; border-radius: 10px; cursor: pointer; }
-    </style>
+    <link rel="stylesheet" href="../public/css/formulario_propiedad.css?v=<?php echo time(); ?>">
 </head>
 <body>
 
 <div class="container">
-    <header style="margin-bottom: 30px;">
-        <a href="../public/index.php" style="color: var(--primary); text-decoration: none; font-weight: bold;">← Volver al Panel</a>
+    <header class="page-header">
+        <a href="../public/index.php" class="back-link-primary">← Volver al Panel</a>
         <h1><?php echo $tituloPagina; ?></h1>
     </header>
 
@@ -98,9 +79,9 @@ if ($step == 2) {
             <label>Descripción</label>
             <textarea name="descripcion" required><?php echo $propiedad ? htmlspecialchars($propiedad['descripcion']) : ''; ?></textarea>
 
-            <div style="display: flex; gap: 20px;">
-                <div style="flex: 1;"><label>Capacidad</label><input type="number" name="capacidad" min="1" required value="<?php echo $propiedad ? $propiedad['capacidad'] : ''; ?>"></div>
-                <div style="flex: 1;"><label>Precio/Noche (USD)</label><input type="number" name="precio" step="0.01" required value="<?php echo $propiedad ? $propiedad['precio_noche'] : ''; ?>"></div>
+            <div class="form-row">
+                <div class="form-col"><label>Capacidad</label><input type="number" name="capacidad" min="1" required value="<?php echo $propiedad ? $propiedad['capacidad'] : ''; ?>"></div>
+                <div class="form-col"><label>Precio/Noche (USD)</label><input type="number" name="precio" step="0.01" required value="<?php echo $propiedad ? $propiedad['precio_noche'] : ''; ?>"></div>
             </div>
 
             <label>Ubicación</label>
@@ -108,9 +89,9 @@ if ($step == 2) {
 
             <label>Imagen</label>
             <?php if($propiedad && !empty($propiedad['imagen_url'])): ?>
-                <div style="margin-bottom: 15px; display: flex; align-items: center; gap: 15px; background: #f9f9f9; padding: 10px; border-radius: 8px;">
-                    <img src="../public/uploads/<?php echo $propiedad['imagen_url']; ?>" style="width: 80px; height: 60px; object-fit: cover;">
-                    <span style="font-size: 0.8em; color: #666;">Imagen actual. Sube otra para cambiarla.</span>
+                <div class="current-image-preview">
+                    <img src="../public/uploads/<?php echo $propiedad['imagen_url']; ?>" class="preview-image">
+                    <span class="preview-text">Imagen actual. Sube otra para cambiarla.</span>
                 </div>
             <?php endif; ?>
             <input type="file" name="foto" accept="image/*" <?php echo ($propiedad) ? '' : 'required'; ?>>
@@ -137,7 +118,7 @@ if ($step == 2) {
                 <?php endforeach; ?>
             </div>
 
-            <button type="submit" class="btn-main" style="background: var(--dark);">
+            <button type="submit" class="btn-main btn-main-dark">
                 <?php echo ($esEdicion) ? "Actualizar Comodidades" : "Publicar Propiedad Ahora"; ?>
             </button>
         </form>

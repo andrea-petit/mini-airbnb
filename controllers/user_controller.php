@@ -77,5 +77,49 @@ class UserController{
         header("Location: ../views/login.php?msg=logout_exito");
         exit();
     }
+
+    public function solicitar_recuperacion(){
+        if ($_SERVER['REQUEST_METHOD'] == 'POST'){
+            if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']){
+                die("Error: token CSRF inválido");
+            }
+            $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
+            if(empty($email)){
+                header("Location: ../views/olvido_password.php?error=campo_vacio");
+                exit();
+            }
+
+            if ($this->modelo->ya_registrado($email)) {
+                header("Location: ../views/reset_password.php?email=" . urlencode($email));
+                exit();
+            } else {
+                header("Location: ../views/olvido_password.php?error=email_no_encontrado");
+                exit();
+            }
+        }
+    }
+
+    public function reset_password(){
+        if ($_SERVER['REQUEST_METHOD'] == 'POST'){
+            if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']){
+                die("Error: token CSRF inválido");
+            }
+            $email = $_POST['email'];
+            $password = $_POST['password'];
+
+            if(empty($password)){
+                header("Location: ../views/reset_password.php?email=".urlencode($email)."&error=campo_vacio");
+                exit();
+            }
+
+            $exito = $this->modelo->actualizar_password($email, $password);
+            if($exito){
+                header("Location: ../views/login.php?msg=password_actualizada");
+                exit();
+            } else {
+                header("Location: ../views/reset_password.php?email=".urlencode($email)."&error=error_servidor");
+            }
+        }
+    }
 }
 

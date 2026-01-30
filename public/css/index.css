@@ -483,3 +483,38 @@ hr {
   color: #717171;
   font-size: 0.9em;
 }
+
+/* Centralized Utility Classes */
+.brand-highlight {
+  color: #1c726e;
+}
+
+.hamburger-svg {
+  display: block;
+  fill: none;
+  height: 16px;
+  width: 16px;
+  stroke: currentcolor;
+  stroke-width: 3;
+  overflow: visible;
+}
+
+.user-avatar-svg {
+  display: block;
+  height: 30px;
+  width: 30px;
+  fill: currentcolor;
+}
+
+.empty-state-container {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.card-link {
+  text-decoration: none;
+}
+
+.inline-form {
+  display: inline;
+}

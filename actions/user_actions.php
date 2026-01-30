@@ -14,6 +14,10 @@ try{
         $controller->login();
     } elseif ($action === 'logout') {
         $controller->logout();
+    } elseif ($action === 'solicitar_recuperacion') {
+        $controller->solicitar_recuperacion();
+    } elseif ($action === 'reset_password') {
+        $controller->reset_password();
     }
 } catch (Exception $e) {
     header ("Location: ../views/login.php?msg=" . urlencode($e->getMessage()));
