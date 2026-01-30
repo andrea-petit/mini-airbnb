@@ -53,7 +53,9 @@ class UserController{
 
             $exito= $this->modelo->registrar($username, $email, $password, $nro_format, $rol);
             if($exito){
-                header("Location: ../views/login.php?registro=exito");
+                session_start();
+                $_SESSION['id_usuario']= $exito;
+                header("Location: ../views/configurar_seguridad.php");
                 exit();
             }else{
                 header("Location: ../views/registro.php?error=registro_fallido");
@@ -142,5 +144,53 @@ class UserController{
             }
         }
     }
+
+    public function cargar_formulario_seguridad() {
+        return $this->modelo->obtener_opciones_preguntas();
+    }
+
+    public function procesar_seguridad($id_usuario, $id_pregunta, $respuesta) {
+        if (empty($id_usuario) || empty($id_pregunta) || empty($respuesta)) {
+            header("Location: ../views/configurar_seguridad.php?id_usuario=$id_usuario&error=campos_vacios");
+            exit();
+        }
+
+        $exito = $this->modelo->registrar_preguntas_seguridad($id_usuario, $id_pregunta, $respuesta);
+
+        if ($exito) {
+            header("Location: ../views/login.php?success=registro_completo");
+            exit();
+        } else {
+            header("Location: ../views/configurar_seguridad.php?id_usuario=$id_usuario&error=error_db");
+            exit();
+        }
+    }
+
+    public function validar_identidad_recuperacion($email, $id_pregunta, $respuesta) {
+        $usuario = $this->modelo->obtener_usuario_por_email($email);
+        
+        if (!$usuario) {
+            return false;
+        }
+
+        return $this->modelo->verificar_respuesta_seguridad($usuario['id_usuario'], $id_pregunta, $respuesta);
+    }
+
+    // Indica si el usuario ya tiene una pregunta de seguridad registrada
+    public function tiene_pregunta_configurada($id_usuario) {
+        $preguntas = $this->modelo->obtener_preguntas_seguridad($id_usuario);
+        return !empty($preguntas) && count($preguntas) > 0;
+    }
+
+    public function obtener_pregunta_por_email($email) {
+        // Usar el método del modelo que devuelve id_pregunta y pregunta asociados al email, o null si no existe
+        return $this->modelo->obtener_pregunta_por_email($email);
+    }
+
+    public function obtener_usuario_por_email($email) {
+        return $this->modelo->obtener_usuario_por_email($email);
+    }
+
+
 }
 

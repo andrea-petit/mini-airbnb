@@ -7,19 +7,90 @@ $controller = new UserController($pdo);
 
 $action = $_GET['action'] ?? '';
 
-try{
-    if ($action === 'registrar') {
-        $controller->registrar();
-    } elseif ($action === 'login') {
-        $controller->login();
-    } elseif ($action === 'logout') {
-        $controller->logout();
-    } elseif ($action === 'solicitar_recuperacion') {
-        $controller->solicitar_recuperacion();
-    } elseif ($action === 'reset_password') {
-        $controller->reset_password();
+try {
+    switch ($action) {
+        case 'registrar':
+            $controller->registrar();
+            break;
+
+        case 'login':
+            $controller->login();
+            break;
+
+        case 'logout':
+            $controller->logout();
+            break;
+
+        case 'guardar_seguridad':
+            // Paso final del registro: Guardar pregunta y respuesta
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                header("Location: ../public/index.php");
+                exit();
+            }
+
+            if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+                die("Error: token CSRF inválido");
+            }
+
+            // Preferir el id guardado en sesión para evitar suplantación
+            $id_usuario = isset($_SESSION['id_usuario']) ? (int)$_SESSION['id_usuario'] : (int)($_POST['id_usuario'] ?? 0);
+            $id_pregunta = (int)($_POST['id_pregunta'] ?? 0);
+            $respuesta = trim($_POST['respuesta'] ?? '');
+
+            if ($id_usuario <= 0 || $id_pregunta <= 0 || $respuesta === '') {
+                header("Location: ../views/configurar_seguridad.php?id_usuario={$id_usuario}&error=campos_vacios");
+                exit();
+            }
+
+            // Evitar registrar más de una pregunta si ya existe
+            if ($controller->tiene_pregunta_configurada($id_usuario)) {
+                header("Location: ../views/login.php?msg=seguridad_configurada");
+                exit();
+            }
+
+            $controller->procesar_seguridad($id_usuario, $id_pregunta, $respuesta);
+            break;
+
+        case 'solicitar_recuperacion':
+            // Aceptar sólo POST para procesar el formulario; si llega por GET redirigir al formulario
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                header("Location: ../views/olvido_password.php");
+                exit();
+            }
+
+            $email = trim($_POST['email'] ?? '');
+            if ($email === '') {
+                header("Location: ../views/olvido_password.php?error=campo_vacio");
+                exit();
+            }
+
+            header("Location: ../views/verificar_seguridad.php?email=" . urlencode($email));
+            exit();
+            break;
+
+        case 'verificar_pregunta':
+            $email = $_POST['email'] ?? '';
+            $id_pregunta = $_POST['id_pregunta'] ?? null;
+            $respuesta = $_POST['respuesta'] ?? '';
+            
+            $es_valido = $controller->validar_identidad_recuperacion($email, $id_pregunta, $respuesta);
+
+            if ($es_valido) {
+                header("Location: ../views/reset_password.php?email=" . urlencode($email));
+            } else {
+                header("Location: ../views/verificar_seguridad.php?email=" . urlencode($email) . "&error=respuesta_incorrecta");
+            }
+            break;
+
+        case 'reset_password':
+            $controller->reset_password();
+            break;
+
+        default:
+            header("Location: ../public/index.php");
+            break;
     }
 } catch (Exception $e) {
-    header ("Location: ../views/login.php?msg=" . urlencode($e->getMessage()));
+    header("Location: ../views/login.php?error=" . urlencode($e->getMessage()));
     exit();
 }
