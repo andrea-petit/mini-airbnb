@@ -155,7 +155,7 @@ if ($userRol === 'anfitrion') {
     </main>
 
     <footer class="main-footer">
-        &copy; 2026 Airbnb Clone. Todos los derechos reservados.
+        &copy; 2026 WindBnB. Todos los derechos reservados.
     </footer>
 
 </body>
