@@ -79,18 +79,19 @@ switch($action){
         );
         break;
     case 'eliminar':
-        $controller->eliminar_propiedad($_GET['id']);
+        $controller->eliminar_propiedad($_GET['id'] ?? '');
         break;
     case 'actualizar':
         $errors = [];
-        $id_propiedad = $_POST['id_propiedad'] ?? '';
+        $uuid = $_POST['uuid'] ?? '';
         $titulo = $_POST['titulo'] ?? '';
         $descripcion = $_POST['descripcion'] ?? '';
         $precio = $_POST['precio'] ?? '';
         $ubicacion = $_POST['ubicacion'] ?? '';
         $foto = $_FILES['foto'] ?? null;
+        $id_usuario = $_SESSION['user_id'];
 
-        if (!v_int($id_propiedad)) $errors[] = 'ID de propiedad inválido.';
+        if (empty($uuid)) $errors[] = 'UUID de propiedad inválido.';
         if (!v_alpha($titulo)) $errors[] = 'Título inválido.';
         if (!v_text($descripcion)) $errors[] = 'Descripción inválida.';
         if (!v_float($precio) || (float)$precio <= 0) $errors[] = 'Precio inválido.';
@@ -99,17 +100,17 @@ switch($action){
 
         if (!empty($errors)){
             $msg = urlencode(implode('; ', $errors));
-            header("Location: ../views/formulario_propiedad.php?id={$id_propiedad}&error={$msg}");
+            header("Location: ../views/formulario_propiedad.php?id={$uuid}&error={$msg}");
             exit();
         }
 
-        $controller->actualizar_propiedad((int)$id_propiedad, trim($titulo), trim($descripcion), (float)str_replace(',', '.', $precio), trim($ubicacion), $_FILES['foto']);
+        $controller->actualizar_propiedad($uuid, trim($titulo), trim($descripcion), (float)str_replace(',', '.', $precio), trim($ubicacion), $_FILES['foto'], $id_usuario);
         break;
     case 'actualizar_comodidades':
-        $controller->actualizar_comodidades($_POST['id_propiedad'], $_POST['comodidades']);
+        $controller->actualizar_comodidades($_POST['uuid'], $_POST['comodidades']);
         break;
     case 'agregar_comodidades':
-        $controller->agregar_comodidades($_POST['id_propiedad'], $_POST['comodidades']);
+        $controller->agregar_comodidades($_POST['uuid'], $_POST['comodidades']);
         break;
     default:
         header("Location: ../public/index.php");

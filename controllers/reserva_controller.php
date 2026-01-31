@@ -168,10 +168,10 @@ class ReservaController{
 
             $exito= $this->modelo->cancelar_reserva($id_reserva);
             if($exito){
-                header("Location: ../public/index.php?cancelacion=exito");
+                header("Location: ../views/mis_reservas.php?cancelacion=exito");
                 exit();
             }else{
-                header("Location: ../public/index.php?error=cancelacion_fallida");
+                header("Location: ../views/mis_reservas.php?error=cancelacion_fallida");
             }
         }
     }
@@ -186,10 +186,10 @@ class ReservaController{
 
             $exito= $this->modelo->confirmar_reserva($id_reserva);
             if($exito){
-                header("Location: ../public/index.php?confirmacion=exito");
+                header("Location: ../views/mis_reservas.php?confirmacion=exito");
                 exit();
             }else{
-                header("Location: ../views/index.php?error=confirmacion_fallida");
+                header("Location: ../views/mis_reservas.php?error=confirmacion_fallida");
             }
         }
     }

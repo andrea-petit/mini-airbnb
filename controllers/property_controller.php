@@ -23,10 +23,19 @@ class PropertyController{
         }   
     }
 
+    public function verificar_propiedad_por_uuid($uuid) {
+        $id_usuario = $this->chequear_id();
+        return $this->modelo->verificar_propiedad_por_uuid($uuid, $id_usuario);
+    }
+
+    public function verificar_propiedad($id_propiedad) {
+        $id_usuario = $this->chequear_id();
+        return $this->modelo->verificar_propiedad($id_propiedad, $id_usuario);
+    }
+
     public function agregar_propiedad($titulo, $descripcion, $precio, $ubicacion, $archivo_foto = null, $capacidad) {
         $id_usuario = $this->chequear_id();
-        
-        // Procesamiento de imagen
+            
         $imagen_url = null;
         if ($archivo_foto && isset($archivo_foto['error']) && $archivo_foto['error'] === 0) {
             $extension = pathinfo($archivo_foto['name'], PATHINFO_EXTENSION);
@@ -37,13 +46,10 @@ class PropertyController{
             }
         }
 
-        // CAMBIO CLAVE: Capturamos el ID que retorna el modelo (lastInsertId)
-        $id_nueva_propiedad = $this->modelo->agregar_propiedad($titulo, $descripcion, $precio, $ubicacion, $id_usuario, $imagen_url, $capacidad);
+        $uuid_nueva_propiedad = $this->modelo->agregar_propiedad($titulo, $descripcion, $precio, $ubicacion, $id_usuario, $imagen_url, $capacidad);
 
-        if ($id_nueva_propiedad) {
-            // REDIRECCIÓN DINÁMICA: Enviamos al formulario de edición con el ID recién creado
-            // Esto desbloquea automáticamente el formulario de comodidades
-            header("Location: ../views/formulario_propiedad.php?id=" . $id_nueva_propiedad . "&step=2&success=datos_guardados");
+        if ($uuid_nueva_propiedad) {
+            header("Location: ../views/formulario_propiedad.php?id=" . $uuid_nueva_propiedad . "&step=2&success=datos_guardados");
             exit();
         } else {
             header("Location: ../views/formulario_propiedad.php?error=error_agregando");
@@ -51,24 +57,29 @@ class PropertyController{
         }
     }
 
-    public function agregar_comodidades($id_propiedad, $comodidades) {
-        // Validamos que vengan comodidades (si no viene ninguna, pasamos un array vacío)
+    public function agregar_comodidades($uuid, $comodidades) {
+        $prop = $this->modelo->obtener_propiedad_por_uuid($uuid);
+        if (!$prop) {
+            header("Location: ../public/index.php?error=propiedad_no_encontrada");
+            exit();
+        }
+        $id_propiedad = $prop['id_propiedad'];
+
         $comodidades = $comodidades ?? [];
         $agregado = $this->modelo->agregar_comodidades($id_propiedad, $comodidades);
 
         if ($agregado) {
-            // Ahora que terminó ambos pasos, al index
             header("Location: ../public/index.php?success=propiedad_publicada_completa");
             exit();
         } else {
-            header("Location: ../views/formulario_propiedad.php?id=$id_propiedad&error=error_comodidades");
+            header("Location: ../views/formulario_propiedad.php?id=$uuid&error=error_comodidades");
             exit();
         }
     }
 
-    public function eliminar_propiedad($id_propiedad){
+    public function eliminar_propiedad($uuid){
         $id_usuario = $this->chequear_id();
-        $eliminado= $this->modelo->eliminar_propiedad($id_propiedad, $id_usuario);
+        $eliminado = $this->modelo->eliminar_propiedad_por_uuid($uuid, $id_usuario);
 
         if($eliminado){
             header("Location: ../public/index.php?success=propiedad_eliminada");
@@ -79,12 +90,10 @@ class PropertyController{
         }
     }
 
-    public function actualizar_propiedad($id_propiedad, $titulo, $descripcion, $precio, $ubicacion, $archivo_foto = null) {
-        $id_usuario = $this->chequear_id();
+    public function actualizar_propiedad($uuid, $titulo, $descripcion, $precio, $ubicacion, $archivo_foto = null, $id_usuario) {
         
-        $imagen_url = null; // Por defecto es null
+        $imagen_url = null; 
         
-        // Solo si el archivo es válido y no tiene errores (error === 0)
         if ($archivo_foto && isset($archivo_foto['error']) && $archivo_foto['error'] === UPLOAD_ERR_OK) {
             $extension = pathinfo($archivo_foto['name'], PATHINFO_EXTENSION);
             $nombre_foto = time() . "_" . uniqid() . "." . $extension;
@@ -95,19 +104,26 @@ class PropertyController{
             }
         }
 
-        $actualizado = $this->modelo->actualizar_propiedad($id_propiedad, $titulo, $descripcion, $precio, $ubicacion, $imagen_url, $id_usuario);
+        $actualizado = $this->modelo->actualizar_propiedad_por_uuid($uuid, $titulo, $descripcion, $precio, $ubicacion, $imagen_url, $id_usuario);
 
         if ($actualizado) {
-            // En edición, nos quedamos en la misma página para confirmar el cambio
             header("Location: ../public/index.php?success=datos_actualizados");
             exit();
         } else {
-            header("Location: ../views/formulario_propiedad.php?id=$id_propiedad&error=error_actualizando");
+            header("Location: ../views/formulario_propiedad.php?id=$uuid&error=error_actualizando");
             exit();
         }
     }
 
-    public function actualizar_comodidades($id_propiedad, $comodidades) {
+    public function actualizar_comodidades($uuid, $comodidades) {
+        if (!$this->verificar_propiedad_por_uuid($uuid)) {
+            header("Location: ../public/index.php?error=no_autorizado");
+            exit();
+        }
+        
+        $prop = $this->modelo->obtener_propiedad_por_uuid($uuid);
+        $id_propiedad = $prop['id_propiedad'];
+
         $comodidades = $comodidades ?? [];
         $actualizado = $this->modelo->actualizar_comodidades($id_propiedad, $comodidades);
 
@@ -115,8 +131,16 @@ class PropertyController{
             header("Location: ../public/index.php?success=comodidades_actualizadas");
             exit();
         } else {
-            header("Location: ../views/formulario_propiedad.php?id=$id_propiedad&error=error_actualizando_comodidades");
+            header("Location: ../views/formulario_propiedad.php?id=$uuid&error=error_actualizando_comodidades");
             exit();
+        }
+    }
+
+    public function obtener_propiedad_por_uuid($uuid){
+        try{
+            return $this->modelo->obtener_propiedad_por_uuid($uuid);
+        }catch(Exception $e){
+            die("Error al obtener propiedad: " . $e->getMessage());
         }
     }
 

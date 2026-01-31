@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 30-01-2026 a las 22:14:46
+-- Tiempo de generación: 31-01-2026 a las 00:37:51
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -74,6 +74,7 @@ INSERT INTO `preguntas_seguridad` (`id_pregunta`, `pregunta`) VALUES
 
 CREATE TABLE `propiedades` (
   `id_propiedad` int(11) NOT NULL,
+  `uuid` varchar(36) NOT NULL,
   `id_anfitrion` int(11) NOT NULL,
   `titulo` varchar(150) NOT NULL,
   `descripcion` text DEFAULT NULL,
@@ -83,13 +84,6 @@ CREATE TABLE `propiedades` (
   `capacidad` int(11) DEFAULT 1,
   `disponible` tinyint(1) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `propiedades`
---
-
-INSERT INTO `propiedades` (`id_propiedad`, `id_anfitrion`, `titulo`, `descripcion`, `precio_noche`, `ubicacion`, `imagen_url`, `capacidad`, `disponible`) VALUES
-(10, 8, 'Mi casa', 'mi casa a la venta. SI', 100.00, 'La Puerta Maraven', '1769797483_697cf76b4b9f3.jpeg', 10, 1);
 
 -- --------------------------------------------------------
 
@@ -101,14 +95,6 @@ CREATE TABLE `propiedad_comodidades` (
   `id_propiedad` int(11) NOT NULL,
   `id_comodidad` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `propiedad_comodidades`
---
-
-INSERT INTO `propiedad_comodidades` (`id_propiedad`, `id_comodidad`) VALUES
-(10, 1),
-(10, 6);
 
 -- --------------------------------------------------------
 
@@ -127,16 +113,6 @@ CREATE TABLE `reservas` (
   `estado` enum('pendiente','confirmada','cancelada') DEFAULT 'pendiente',
   `creado_en` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `reservas`
---
-
-INSERT INTO `reservas` (`id_reserva`, `id_propiedad`, `id_huesped`, `fecha_inicio`, `fecha_fin`, `precio_total`, `cant_huespedes`, `estado`, `creado_en`) VALUES
-(7, 10, 5, '2026-01-30', '2026-01-31', 100.00, 1, 'cancelada', '2026-01-30 19:11:12'),
-(8, 10, 5, '2026-01-30', '2026-01-31', 1000.00, 10, 'cancelada', '2026-01-30 19:34:28'),
-(9, 10, 10, '2026-01-30', '2026-01-31', 100.00, 1, 'cancelada', '2026-01-30 20:47:42'),
-(10, 10, 10, '2026-01-30', '2026-01-31', 100.00, 1, 'cancelada', '2026-01-30 20:49:01');
 
 -- --------------------------------------------------------
 
@@ -159,11 +135,11 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id_usuario`, `username`, `email`, `password`, `nro_tlf`, `rol`, `creado_en`) VALUES
-(5, 'andrea', 'andrea@prueba.com', '$2y$10$l0bjFnB2V11J/5.KO1Doa.N60WOlNJAt0/Ort8dov0AYQ3Fbp0Ea2', '04246304379', 'huesped', '2026-01-30 18:04:00'),
-(6, 'yope', 'yope@gmail.com', '$2y$10$XrctgDDF8SXJlfPj..4Yq.FHvrtPMRaENxyb0anv41VEgCn41QMgm', '4146574687', 'huesped', '2026-01-30 18:14:39'),
-(8, 'Andres', 'andres@prueba.com', '$2y$10$wo7uo2n40pO8wpCvRKfApOjMk3PKIjLehKYQbSZ576S1RgqnGTx7i', '4141234567', 'anfitrion', '2026-01-30 18:22:16'),
-(10, 'andreaa', 'andrea2@prueba.com', '$2y$10$nJh15l66sBiFmzESL3iwl.YIxQY8FUDnWaC3KrJu4z1jQpiXWLP0a', '4246304377', 'huesped', '2026-01-30 20:45:25'),
-(11, 'veronika andreina arias velasco', 'veronika@gmail.com', '$2y$10$4kp7Nsoww8exgXi.M.I9TOJUPfIcoqbwBDScoAmzX8Ql/wfRc8GcK', '4121002225', 'huesped', '2026-01-30 20:59:33');
+(12, 'Andres', 'andres@gmail.com', '$2y$10$ZO1x8iiRBxCPqNBZayVtEu62P5GwUXC6D9TJ0Ss2TL0b5J9JW23om', '4145674687', 'anfitrion', '2026-01-30 21:22:37'),
+(13, 'Veronika', 'vero@gmail', '$2y$10$TRo6AdDhQ0/Wc6tXsA/aG.6EwYbjk.1ytIOxWSkemR1ibg1NC6OEu', '1234567887', 'huesped', '2026-01-30 22:37:33'),
+(14, 'Andrea', 'andrea@gmail.com', '$2y$10$97YeanlchR2miHljscvfqu8LZ88HfjHVPf3eCVeSwH4TVTNfXdHqK', '4146574687', 'huesped', '2026-01-30 22:45:54'),
+(15, '&lt;script&gt;alert(&#039;Tu web es vulnerable&#039;);&lt;/script&gt;', '123@gmail', '$2y$10$FsO3Q4CmZqNousPC15DqIe60QEHreOH3omlByTBbSL5R53vUyG4g2', '1111111111', 'huesped', '2026-01-30 23:03:42'),
+(16, 'Veronika', 'verito@gmail', '$2y$10$E5cCTKhlhIr0OpW/PZEZUuyClkOyCVss03Yt7m0VNZOdlw2VqhjdC', '3333333333', 'anfitrion', '2026-01-30 23:08:07');
 
 -- --------------------------------------------------------
 
@@ -184,8 +160,10 @@ CREATE TABLE `usuarios_preguntas` (
 --
 
 INSERT INTO `usuarios_preguntas` (`id_usuario_pregunta`, `id_usuario`, `id_pregunta`, `respuesta_hash`, `fecha_configuracion`) VALUES
-(1, 10, 1, '$2y$10$OXgWrdfY5Z9giGLGe4YMIOukFRMiUsnYuQ2HApqfuFC9m9m4OrJom', '2026-01-30 20:45:36'),
-(2, 11, 1, '$2y$10$EC86vGOSP54HMM9gKU7OKuu3LdzG4/cfaPBpkvMBLEBrfWost3oJO', '2026-01-30 20:59:45');
+(3, 12, 4, '$2y$10$Z1xX95M00HP46jw0/dDOzuo5PgRazyBCo457i5tlgpJe7zBOhHjJG', '2026-01-30 21:23:07'),
+(4, 13, 2, '$2y$10$aq72r3gBemmqt5p7EgBT6emB6HTvG83BAEBPyl38VT7RKoXB22iDq', '2026-01-30 22:37:38'),
+(5, 14, 4, '$2y$10$TdZHK9Ux/rI4PUcYDLrvMuzMrnGOISNoLnQcbFmG1vKMiZFzQ6YX.', '2026-01-30 22:46:04'),
+(6, 16, 1, '$2y$10$gC2nnuBsmPp17EYqBEvF1ukoLex7AS02.7XnoAZhe9DctJUjbbSYa', '2026-01-30 23:08:16');
 
 --
 -- Índices para tablas volcadas
@@ -208,6 +186,7 @@ ALTER TABLE `preguntas_seguridad`
 --
 ALTER TABLE `propiedades`
   ADD PRIMARY KEY (`id_propiedad`),
+  ADD UNIQUE KEY `uuid` (`uuid`),
   ADD KEY `id_anfitrion` (`id_anfitrion`);
 
 --
@@ -261,25 +240,25 @@ ALTER TABLE `preguntas_seguridad`
 -- AUTO_INCREMENT de la tabla `propiedades`
 --
 ALTER TABLE `propiedades`
-  MODIFY `id_propiedad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_propiedad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de la tabla `reservas`
 --
 ALTER TABLE `reservas`
-  MODIFY `id_reserva` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_reserva` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios_preguntas`
 --
 ALTER TABLE `usuarios_preguntas`
-  MODIFY `id_usuario_pregunta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_usuario_pregunta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Restricciones para tablas volcadas

@@ -83,7 +83,7 @@ if ($userRol === 'anfitrion') {
                                 <h3 class="reservation-property-title"><?php echo htmlspecialchars($r['titulo_propiedad']); ?></h3>
                                 <p class="reservation-property-location">
                                     <?php echo $userRol === 'anfitrion' 
-                                        ? 'Huésped: ' . htmlspecialchars($r['nombre_huesped']) 
+                                        ? 'Huésped: ' . htmlspecialchars($r['nombre']) 
                                         : htmlspecialchars($r['ubicacion_propiedad']); ?>
                                 </p>
                             </div>

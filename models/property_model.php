@@ -7,22 +7,59 @@ class Property {
         $this->db = $conexion;
     }
 
-    public function agregar_propiedad($titulo, $descripcion, $precio, $ubicacion, $id_usuario, $imagen_url, $capacidad) {
-        $sql = "INSERT INTO propiedades (titulo, descripcion, precio_noche, ubicacion, id_anfitrion, imagen_url, capacidad) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    public function verificar_propiedad_por_uuid($uuid, $id_usuario) {
+        $sql = "SELECT COUNT(*) FROM propiedades WHERE uuid = ? AND id_anfitrion = ?";
         $stmt = $this->db->prepare($sql);
         try {
-            $stmt->execute([$titulo, $descripcion, $precio, $ubicacion, $id_usuario, $imagen_url, $capacidad]);
-            // Retornamos el último ID para poder usarlo en las comodidades inmediatamente
-            return $this->db->lastInsertId();
+            $stmt->execute([$uuid, $id_usuario]);
+            return $stmt->fetchColumn() > 0;
         } catch (PDOException $e) {
-            // Log de error para debug
+            error_log("Error en verificar_propiedad_por_uuid: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function verificar_propiedad($id_propiedad, $id_usuario) {
+        $sql = "SELECT COUNT(*) FROM propiedades WHERE id_propiedad = ? AND id_anfitrion = ?";
+        $stmt = $this->db->prepare($sql);
+        try {
+            $stmt->execute([$id_propiedad, $id_usuario]);
+            return $stmt->fetchColumn() > 0;
+        } catch (PDOException $e) {
+            error_log("Error en verificar_propiedad: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    private function verificarPropiedad($id_propiedad, $id_usuario){
+        $sql = "SELECT * FROM propiedades WHERE id_propiedad = ? AND id_anfitrion = ?";
+        $stmt = $this->db->prepare($sql);
+        try{
+            $stmt->execute([$id_propiedad, $id_usuario]);
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        }catch(PDOException $e){
+            die("Error al verificar propiedad: " . $e->getMessage());
+        }
+    }
+
+    public function agregar_propiedad($titulo, $descripcion, $precio, $ubicacion, $id_usuario, $imagen_url, $capacidad) {
+        $uuid = bin2hex(random_bytes(16)); // Simple UUID generation
+        // Format to 8-4-4-4-12
+        $uuid = substr($uuid, 0, 8) . '-' . substr($uuid, 8, 4) . '-' . substr($uuid, 12, 4) . '-' . substr($uuid, 16, 4) . '-' . substr($uuid, 20, 12);
+
+        $sql = "INSERT INTO propiedades (uuid, titulo, descripcion, precio_noche, ubicacion, id_anfitrion, imagen_url, capacidad) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $this->db->prepare($sql);
+        try {
+            $stmt->execute([$uuid, $titulo, $descripcion, $precio, $ubicacion, $id_usuario, $imagen_url, $capacidad]);
+            return $uuid; // Retornamos el UUID en lugar del ID numérico
+        } catch (PDOException $e) {
             error_log("Error en agregar_propiedad: " . $e->getMessage());
             return false;
         }
     }
 
 
-    public function actualizar_propiedad($id_propiedad, $titulo, $descripcion, $precio, $ubicacion, $imagen_url, $id_usuario) {
+    public function actualizar_propiedad_por_uuid($uuid, $titulo, $descripcion, $precio, $ubicacion, $imagen_url, $id_usuario) {
         $sql = "UPDATE propiedades SET titulo = ?, descripcion = ?, precio_noche = ?, ubicacion = ?";
         $params = [$titulo, $descripcion, $precio, $ubicacion];
 
@@ -31,8 +68,8 @@ class Property {
             $params[] = $imagen_url;
         }
 
-        $sql .= " WHERE id_propiedad = ? AND id_anfitrion = ?";
-        $params[] = $id_propiedad;
+        $sql .= " WHERE uuid = ? AND id_anfitrion = ?";
+        $params[] = $uuid;
         $params[] = $id_usuario;
 
         $stmt = $this->db->prepare($sql);
@@ -41,10 +78,10 @@ class Property {
             $stmt->execute($params);
             return true; 
         } catch (PDOException $e) {
-            die("Error al actualizar propiedad: " . $e->getMessage());
+            die("Error al actualizar propiedad por uuid: " . $e->getMessage());
         }
     }
-        
+
     public function agregar_comodidades($id_propiedad, $comodidades){
         #Agregar las comodidades asociadas a una propiedad
         $sql = "INSERT INTO propiedad_comodidades (id_propiedad, id_comodidad) VALUES (?, ?)";
@@ -59,17 +96,18 @@ class Property {
         }
     }
 
-    public function eliminar_propiedad($id_propiedad, $id_usuario){
-        #DELETE propiedad. Ubica propiedad por id y elimina de la bd
-        $sql = "DELETE FROM propiedades WHERE id_propiedad = ? AND id_anfitrion = ?";
+    public function eliminar_propiedad_por_uuid($uuid, $id_usuario){
+        #DELETE propiedad por uuid.
+        $sql = "DELETE FROM propiedades WHERE uuid = ? AND id_anfitrion = ?";
         $stmt = $this->db->prepare($sql);
         try{
-            $stmt->execute([$id_propiedad, $id_usuario]);
+            $stmt->execute([$uuid, $id_usuario]);
             return $stmt->rowCount() > 0;
         }catch(PDOException $e){
-            die("Error al eliminar propiedad: " . $e->getMessage());
+            die("Error al eliminar propiedad por uuid: " . $e->getMessage());
         }
     }
+
 
     public function actualizar_comodidades($id_propiedad, $comodidades){
         #Actualizar las comodidades asociadas a una propiedad
@@ -86,6 +124,20 @@ class Property {
             return true;
         }catch(PDOException $e){
             die("Error al actualizar comodidades: " . $e->getMessage());
+        }
+    }
+
+    public function obtener_propiedad_por_uuid($uuid){
+        #Buscar propiedad exacta con su uuid 
+        $sql = "SELECT p.* , u.username as anfitrion_nombre, u.email as anfitrion_email FROM propiedades p
+                JOIN usuarios u ON p.id_anfitrion = u.id_usuario
+                WHERE p.uuid = ?";
+        $stmt = $this->db->prepare($sql);
+        try{
+            $stmt->execute([$uuid]);
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        }catch(PDOException $e){
+            die("Error al obtener propiedad por uuid: " . $e->getMessage());
         }
     }
 

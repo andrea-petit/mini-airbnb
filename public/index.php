@@ -147,8 +147,8 @@ if ($userRol === 'anfitrion') {
                                 <img src="../public/uploads/<?php echo $p['imagen_url']; ?>" class="host-card-img">
                                 <h3 class="host-card-title"><?php echo htmlspecialchars($p['titulo']); ?></h3>
                                 <div class="host-actions">
-                                    <a href="../views/formulario_propiedad.php?id=<?php echo $p['id_propiedad']; ?>" class="btn-action-edit">Editar</a>
-                                    <button onclick="confirmDelete(<?php echo $p['id_propiedad']; ?>)" class="btn-action-delete">Eliminar</button>
+                                    <a href="../views/formulario_propiedad.php?id=<?php echo $p['uuid']; ?>" class="btn-action-edit">Editar</a>
+                                    <button onclick="confirmDelete('<?php echo $p['uuid']; ?>')" class="btn-action-delete">Eliminar</button>
                                 </div>
                             </div>
                         <?php endforeach; ?>

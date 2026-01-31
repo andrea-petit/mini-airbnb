@@ -15,10 +15,18 @@ $step = isset($_GET['step']) ? (int)$_GET['step'] : 1;
 
 // 1. Carga de datos a través del CONTROLADOR únicamente
 if (isset($_GET['id'])) {
-    $id_propiedad = (int)$_GET['id'];
-    $propiedad = $propCtrl->obtener_propiedad_por_id($id_propiedad);
+    $uuid = $_GET['id'];
+    
+    // Verificamos propiedad por UUID (IDOR check)
+    if (!$propCtrl->verificar_propiedad_por_uuid($uuid)) {
+        header("Location: ../public/templates/403.php?error=no_autorizado");
+        exit();
+    }
+
+    $propiedad = $propCtrl->obtener_propiedad_por_uuid($uuid);
     
     if ($propiedad) {
+        $id_propiedad = $propiedad['id_propiedad']; 
         // Es edición si existe la propiedad y NO trae la bandera de "nueva"
         $esEdicion = !isset($_GET['new']); 
         $comodidadesSeleccionadas = $propCtrl->obtener_comodidades_seleccionadas($id_propiedad);
@@ -45,7 +53,6 @@ if ($step == 2) {
 <head>
     <meta charset="UTF-8">
     <title><?php echo $tituloPagina; ?></title>
-    <!-- <link rel="stylesheet" href="../public/css/styles.css?v=<?php echo time(); ?>"> -->
     <link rel="stylesheet" href="../public/css/formulario_propiedad.css?v=<?php echo time(); ?>">
 </head>
 <body>
@@ -58,12 +65,12 @@ if ($step == 2) {
     </header>
 
     <div class="tabs-nav">
-        <button class="tab-btn <?php echo $step == 1 ? 'active' : ''; ?> <?php echo $esEdicion ? 'clickable' : 'disabled'; ?>" 
-                <?php echo $esEdicion ? "onclick=\"switchTab('datos')\"" : ""; ?>>
+        <button id="tab-btn-datos" class="tab-btn <?php echo ($step == 1) ? 'active' : ''; ?> clickable" 
+                onclick="switchTab('datos')">
             1. Datos Básicos
         </button>
-        <button class="tab-btn <?php echo $step == 2 ? 'active' : ''; ?> <?php echo ($esEdicion || $step == 2) ? 'clickable' : 'disabled'; ?>" 
-                <?php echo ($esEdicion || $step == 2) ? "onclick=\"switchTab('comodidades')\"" : ""; ?>>
+        <button id="tab-btn-comodidades" class="tab-btn <?php echo ($step == 2) ? 'active' : ''; ?> <?php echo ($esEdicion || $step == 2 || (isset($_GET['id']) && isset($_GET['new']))) ? 'clickable' : 'disabled'; ?>" 
+                <?php echo ($esEdicion || $step == 2 || (isset($_GET['id']) && isset($_GET['new']))) ? "onclick=\"switchTab('comodidades')\"" : ""; ?>>
             2. Comodidades
         </button>
     </div>
@@ -71,7 +78,7 @@ if ($step == 2) {
     <section id="section-datos" class="card-form <?php echo ($step == 2) ? 'hidden' : ''; ?>">
         <form action="../actions/property_actions.php?action=<?php echo $esEdicion ? 'actualizar' : 'registrar'; ?>" method="POST" enctype="multipart/form-data">
             <?php if ($propiedad): ?>
-                <input type="hidden" name="id_propiedad" value="<?php echo $propiedad['id_propiedad']; ?>">
+                <input type="hidden" name="uuid" value="<?php echo $propiedad['uuid']; ?>">
             <?php endif; ?>
 
             <label>Título del anuncio</label>
@@ -106,7 +113,7 @@ if ($step == 2) {
     <section id="section-comodidades" class="card-form <?php echo ($step == 1) ? 'hidden' : ''; ?>">
         <h2>¿Qué ofrece tu alojamiento?</h2>
         <form action="../actions/property_actions.php?action=actualizar_comodidades" method="POST">
-            <input type="hidden" name="id_propiedad" value="<?php echo $propiedad['id_propiedad'] ?? ''; ?>">
+            <input type="hidden" name="uuid" value="<?php echo $propiedad['uuid'] ?? ''; ?>">
             <?php if(isset($_GET['new'])): ?> <input type="hidden" name="is_new" value="1"> <?php endif; ?>
 
             <div class="amenities-grid">
@@ -128,18 +135,24 @@ if ($step == 2) {
 
 <script>
     function switchTab(tab) {
-        const isEdicion = <?php echo json_encode($esEdicion); ?>;
-        const currentStep = <?php echo $step; ?>;
-        if (!isEdicion && currentStep === 2 && tab === 'datos') return;
-
         const secDatos = document.getElementById('section-datos');
         const secComodidades = document.getElementById('section-comodidades');
+        const btnDatos = document.getElementById('tab-btn-datos');
+        const btnComodidades = document.getElementById('tab-btn-comodidades');
+
         if (tab === 'datos') {
             secDatos.classList.remove('hidden');
             secComodidades.classList.add('hidden');
+            btnDatos.classList.add('active');
+            btnComodidades.classList.remove('active');
         } else {
+            // Solo permitir ir a comodidades si es edición o si ya estamos en el paso 2 (o el botón es clickable)
+            if (btnComodidades.classList.contains('disabled')) return;
+            
             secDatos.classList.add('hidden');
             secComodidades.classList.remove('hidden');
+            btnDatos.classList.remove('active');
+            btnComodidades.classList.add('active');
         }
     }
 </script>
