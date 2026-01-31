@@ -22,7 +22,6 @@ try {
             break;
 
         case 'guardar_seguridad':
-            // Paso final del registro: Guardar pregunta y respuesta
             if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
                 header("Location: ../public/index.php");
                 exit();
@@ -32,7 +31,6 @@ try {
                 die("Error: token CSRF inválido");
             }
 
-            // Preferir el id guardado en sesión para evitar suplantación
             $id_usuario = isset($_SESSION['id_usuario']) ? (int)$_SESSION['id_usuario'] : (int)($_POST['id_usuario'] ?? 0);
             $id_pregunta = (int)($_POST['id_pregunta'] ?? 0);
             $respuesta = trim($_POST['respuesta'] ?? '');
@@ -42,7 +40,6 @@ try {
                 exit();
             }
 
-            // Evitar registrar más de una pregunta si ya existe
             if ($controller->tiene_pregunta_configurada($id_usuario)) {
                 header("Location: ../views/login.php?msg=seguridad_configurada");
                 exit();
@@ -52,7 +49,6 @@ try {
             break;
 
         case 'solicitar_recuperacion':
-            // Aceptar sólo POST para procesar el formulario; si llega por GET redirigir al formulario
             if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
                 header("Location: ../views/olvido_password.php");
                 exit();

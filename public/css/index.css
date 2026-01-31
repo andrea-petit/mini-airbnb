@@ -474,10 +474,10 @@ hr {
   flex: 1;
   text-align: center;
   padding: 8px;
-  background: #f7f7f7;
+  background: #1c726e;
   border-radius: 6px;
   text-decoration: none;
-  color: #333;
+  color: #fff;
   font-size: 0.9em;
   border: 1px solid #ddd;
 }

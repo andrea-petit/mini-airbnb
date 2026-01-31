@@ -34,38 +34,81 @@ $capacidadMaxima = $p['capacidad'] ?? 5;
 <body>
 
 <main class="container">
-    <a href="../public/index.php" class="back-link">← Volver al buscador</a>
+    <div class="header-actions">
+        <a href="../public/index.php" class="back-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            Volver al buscador
+        </a>
+    </div>
 
     <section class="main-image-container">
         <img src="../public/uploads/<?php echo $p['imagen_url']; ?>" alt="Imagen de la propiedad">
     </section>
 
     <div class="detalle-layout">
-        <section>
-            <h1><?php echo htmlspecialchars($p['titulo']); ?></h1>
-            <div class="meta-info">
-                <strong><?php echo htmlspecialchars($p['ubicacion']); ?></strong> · 
-                Anfitrión: <?php echo htmlspecialchars($p['anfitrion_nombre']); ?> · 
-                <?php echo $capacidadMaxima; ?> huéspedes máximo
+        <section class="content-section">
+            <div class="title-block">
+                <h1><?php echo htmlspecialchars($p['titulo']); ?></h1>
+                <div class="meta-info">
+                    <span class="location">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        <?php echo htmlspecialchars($p['ubicacion']); ?>
+                    </span>
+                    <span class="divider">·</span>
+                    <span class="capacity">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        Hasta <?php echo $capacidadMaxima; ?> huéspedes
+                    </span>
+                </div>
             </div>
 
-            <hr>
+            <div class="host-badge">
+                <div class="host-info">
+                    <h3>Anfitrión: <?php echo htmlspecialchars($p['anfitrion_nombre']); ?></h3>
+                </div>
+                <div class="host-avatar">
+                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="40" height="40" style="color: #717171;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                </div>
+            </div>
 
-            <h2 class="section-title">Sobre este espacio</h2>
-            <p class="description-text"><?php echo htmlspecialchars($p['descripcion']); ?></p>
+            <hr class="section-divider">
 
             <?php if (!empty($comodidades)): ?>
-                <hr>
                 <h2 class="section-title">Lo que este lugar ofrece</h2>
-                <div class="amenities-container">
+                <div class="amenities-grid-v2">
                     <?php foreach ($comodidades as $com): ?>
-                        <div class="amenity-item">
-                            <span class="amenity-icon">✓</span>
-                            <span><?php echo htmlspecialchars($com['nombre']); ?></span>
+                        <div class="amenity-card-item">
+                            <span class="amenity-icon-v2">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            </span>
+                            <span class="amenity-name"><?php echo htmlspecialchars($com['nombre']); ?></span>
                         </div>
                     <?php endforeach; ?>
                 </div>
+                <hr class="section-divider">
             <?php endif; ?>
+
+            <div class="trust-highlights">
+                <div class="highlight-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                    <div>
+                        <h4>Garantía WindBnB</h4>
+                        <p>Tu estancia está protegida en caso de cancelaciones o problemas de entrada.</p>
+                    </div>
+                </div>
+                <div class="highlight-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="24" height="24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    <div>
+                        <h4>Cancelación gratuita</h4>
+                        <p>Cancela antes de las 48 horas previas al viaje para un reembolso completo.</p>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="section-divider">
+
+            <h2 class="section-title">Sobre este espacio</h2>
+            <p class="description-text"><?php echo htmlspecialchars($p['descripcion']); ?></p>
         </section>
 
         <aside>

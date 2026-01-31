@@ -7,7 +7,6 @@ $controller= new PropertyController($pdo);
 $action = $_GET['action'] ?? '';
 $id_usuario = $_SESSION['user_id'];
 
-// Funciones de validación reutilizables (server-side)
 function v_text($v) {
     if (!isset($v) || trim($v) === '') return false;
     $s = trim(strip_tags($v));

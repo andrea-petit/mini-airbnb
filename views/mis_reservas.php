@@ -25,9 +25,8 @@ if ($userRol === 'anfitrion') {
     <meta charset="UTF-8">
     <?php $userName = $_SESSION['user_name'] ?? 'Usuario'; ?>
     <title><?php echo $titulo; ?></title>
-    <link rel="stylesheet" href="../public/css/styles.css?v=1.0">
-    <link rel="stylesheet" href="../public/css/index.css?v=1.0">
-    <link rel="stylesheet" href="../public/css/reservas.css?v=1.0">
+    <link rel="stylesheet" href="../public/css/reservas.css?v=<?php echo time(); ?>">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <nav class="navbar">
@@ -109,25 +108,38 @@ if ($userRol === 'anfitrion') {
                                     <form action="../actions/reserva_actions.php?action=confirmar" method="POST" class="inline-form">
                                         <input type="hidden" name="id_reserva" value="<?php echo $r['id_reserva']; ?>">
                                         <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
-                                        <button type="submit" class="btn-reservation btn-accept">Aceptar</button>
+                                        <button type="submit" class="btn-reservation btn-accept">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                            Aceptar
+                                        </button>
                                     </form>
                                     <form action="../actions/reserva_actions.php?action=cancelar" method="POST" class="inline-form">
                                         <input type="hidden" name="id_reserva" value="<?php echo $r['id_reserva']; ?>">
                                         <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
-                                        <button type="submit" class="btn-reservation btn-reject">Rechazar</button>
+                                        <button type="button" class="btn-reservation btn-reject" onclick="confirmReject(this.form)">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                            Rechazar
+                                        </button>
                                     </form>
                                 <?php else: ?>
                                     <form action="../actions/reserva_actions.php?action=cancelar" method="POST" class="inline-form">
                                         <input type="hidden" name="id_reserva" value="<?php echo $r['id_reserva']; ?>">
                                         <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
-                                        <button type="submit" class="btn-reservation btn-cancel" onclick="return confirm('¿Estás seguro de que deseas cancelar esta reserva?');">Cancelar Reserva</button>
+                                        <button type="button" class="btn-reservation btn-cancel" onclick="confirmCancel(this.form)">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
+                                            Cancelar Reserva
+                                        </button>
                                     </form>
                                 <?php endif; ?>
                             <?php else: ?>
-                                <button class="btn-reservation btn-disabled" disabled>Sin acciones disponibles</button>
+                                <div class="status-info">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                                    Sin acciones pendientes
+                                </div>
                             <?php endif; ?>
                             
-                            <button onclick="window.open('https://wa.me/+58<?php echo htmlspecialchars($r['telefono']); ?>?text=Hola%20<?php echo htmlspecialchars($r['nombre']); ?>,%20te%20contacto%20por%20la%20reserva%20de%20la%20propiedad%20<?php echo htmlspecialchars($r['titulo_propiedad']); ?>.', '_blank')" class="btn-reservation btn-message">
+                            <button type="button" onclick="window.open('https://wa.me/+58<?php echo htmlspecialchars($r['telefono']); ?>?text=Hola%20<?php echo htmlspecialchars($r['nombre']); ?>,%20te%20contacto%20por%20la%20reserva%20de%20la%20propiedad%20<?php echo htmlspecialchars($r['titulo_propiedad']); ?>.', '_blank')" class="btn-reservation btn-message">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 1 1-7.6-14h.1a4.6 4.6 0 0 1 3.3 1.3 4.6 4.6 0 0 1 1.3 3.3v.4c.03.11.08.2.16.27.08.06.18.09.28.09h.5a1 1 0 0 0 1-1h.5a1 1 0 0 0 1 1H21v1.1c.1.1.2.14.33.14s.24-.04.34-.14V11.5zM12 11h.01"></path></svg>
                                 Enviar Mensaje
                             </button>
                         </div>
@@ -135,6 +147,40 @@ if ($userRol === 'anfitrion') {
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
-    </main>
+    <script>
+    function confirmCancel(form) {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "Esta acción cancelará tu reserva de forma permanente.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ff385c',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, cancelar reserva',
+            cancelButtonText: 'No, mantener'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    }
+
+    function confirmReject(form) {
+        Swal.fire({
+            title: '¿Rechazar reserva?',
+            text: "El huésped recibirá una notificación de la cancelación.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ff385c',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, rechazar',
+            cancelButtonText: 'Volver'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    }
+    </script>
 </body>
 </html>

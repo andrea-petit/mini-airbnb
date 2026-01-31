@@ -43,8 +43,7 @@ class Property {
     }
 
     public function agregar_propiedad($titulo, $descripcion, $precio, $ubicacion, $id_usuario, $imagen_url, $capacidad) {
-        $uuid = bin2hex(random_bytes(16)); // Simple UUID generation
-        // Format to 8-4-4-4-12
+        $uuid = bin2hex(random_bytes(16));
         $uuid = substr($uuid, 0, 8) . '-' . substr($uuid, 8, 4) . '-' . substr($uuid, 12, 4) . '-' . substr($uuid, 16, 4) . '-' . substr($uuid, 20, 12);
 
         $sql = "INSERT INTO propiedades (uuid, titulo, descripcion, precio_noche, ubicacion, id_anfitrion, imagen_url, capacidad) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";

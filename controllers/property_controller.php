@@ -17,10 +17,10 @@ class PropertyController{
         $id_usuario = $_SESSION['user_id'] ?? null;
         if(!$id_usuario){
             header("Location: ../login.php?error=no_autenticado");
-            exit();
+            exit();      
         }else{
             return $id_usuario;
-        }   
+        }
     }
 
     public function verificar_propiedad_por_uuid($uuid) {

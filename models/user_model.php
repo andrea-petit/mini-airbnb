@@ -24,18 +24,12 @@ class User {
     }
 
     public function registrar($username, $email, $password, $nro_tlf, $rol){
-        #Recibe datos de usuarios, hashea la contraseña y guarda en la bd,
         $hashed_password= password_hash($password, PASSWORD_BCRYPT);
-
-
         $sql = "INSERT INTO usuarios (username, email, password, nro_tlf, rol) VALUES (?, ?, ?, ?, ?)";
         $stmt= $this->db->prepare($sql);
-
         try{
             $stmt->execute([$username, $email, $hashed_password, $nro_tlf, $rol]);
-
             return $this->db->lastInsertId();
-
         }catch(PDOexception $e){
             die("Error al registrar usuario: " . $e->getMessage());
         }
