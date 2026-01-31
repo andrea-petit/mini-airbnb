@@ -6,6 +6,7 @@ RewriteEngine On
 RewriteCond %{HTTP_REFERER} ^$
 RewriteRule ^(config|models|controllers|actions) - [F,L]
 
+
 RedirectMatch 301 ^/airbnb?$ /airbnb/views/login.php
 
 ErrorDocument 403 /airbnb/public/templates/403.php
