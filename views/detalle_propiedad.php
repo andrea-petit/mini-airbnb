@@ -138,7 +138,6 @@ $capacidadMaxima = $p['capacidad'] ?? 5;
                     <div id="resumen" class="resumen-pago hidden">
                         <div class="resumen-row">
                             <span>$<?php echo number_format($p['precio_noche'], 2); ?> x <span id="noches_txt">0</span> noches</span>
-                            <span>$<span id="subtotal_txt">0.00</span></span>
                         </div>
                         <div class="resumen-row total-row">
                             <span>Total</span>
@@ -191,7 +190,7 @@ $capacidadMaxima = $p['capacidad'] ?? 5;
                 return;
             }
 
-            const total = (noches * precioNoche) * personas;
+            const total = (noches * precioNoche);
             document.getElementById('noches_txt').innerText = noches;
             document.getElementById('total_txt').innerText = total.toLocaleString('en-US', {minimumFractionDigits: 2});
             resumen.style.display = 'block';

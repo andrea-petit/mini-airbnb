@@ -75,7 +75,8 @@ class Reserva{
             FROM reservas r 
             JOIN propiedades p ON r.id_propiedad = p.id_propiedad 
             JOIN usuarios u ON p.id_anfitrion = u.id_usuario
-            WHERE r.id_huesped = ?";
+            WHERE r.id_huesped = ?
+            ORDER BY r.creado_en DESC";
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute([$id_usuario]);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);

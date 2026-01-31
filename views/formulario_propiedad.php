@@ -94,7 +94,7 @@ if ($step == 2) {
             <textarea name="descripcion" required><?php echo $propiedad ? htmlspecialchars($propiedad['descripcion']) : ''; ?></textarea>
 
             <div class="form-row">
-                <div class="form-col"><label>Capacidad</label><input type="number" name="capacidad" min="1" required value="<?php echo $propiedad ? $propiedad['capacidad'] : ''; ?>"></div>
+                <div class="form-col"><label>Capacidad</label><input type="number" name="capacidad" min="1" max="20" required value="<?php echo $propiedad ? $propiedad['capacidad'] : ''; ?>"></div>
                 <div class="form-col"><label>Precio/Noche (USD)</label><input type="number" name="precio" step="0.01" required value="<?php echo $propiedad ? $propiedad['precio_noche'] : ''; ?>"></div>
             </div>
 

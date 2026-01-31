@@ -482,6 +482,15 @@ hr {
   border: 1px solid #ddd;
 }
 
+.btn-action-edit:hover {
+  color: white;
+  transform: translateY(-2px);
+  transition:
+    linear all 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
 .btn-action-delete {
   flex: 1;
   padding: 8px;
@@ -491,6 +500,15 @@ hr {
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.9em;
+}
+
+.btn-action-delete:hover {
+  color: #ff385c;
+  transform: translateY(-2px);
+  transition:
+    linear all 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .main-footer {

@@ -1,8 +1,10 @@
 Options -Indexes
 
 RewriteEngine On
-RewriteCond %{REQUEST_METHOD} !POST
-RewriteRule ^(config|models|controllers) - [F,L]
+
+
+RewriteCond %{HTTP_REFERER} ^$
+RewriteRule ^(config|models|controllers|actions) - [F,L]
 
 RedirectMatch 301 ^/airbnb?$ /airbnb/views/login.php
 

@@ -159,7 +159,7 @@ $noches = $d1->diff($d2)->days;
             $stmt->execute([$id_propiedad]);
             $prop = $stmt->fetch();
             
-            $total_estadia = ($noches * $prop['precio_noche']) * $cant_huespedes;
+            $total_estadia = ($noches * $prop['precio_noche']);
             $comision_servicio = $total_estadia * 0.03; // Simulación de comisión del 3%
             $total_final = $total_estadia + $comision_servicio;
             ?>
@@ -170,7 +170,7 @@ $noches = $d1->diff($d2)->days;
                     <h4 class="property-title"><?php echo htmlspecialchars($prop['titulo']); ?></h4>
                     <p class="property-rating">
                         <svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path></svg>
-                        5.0 (42 reseñas)
+                        5.0
                     </p>
                 </div>
             </div>
@@ -185,7 +185,6 @@ $noches = $d1->diff($d2)->days;
                 </div>
                 <div class="price-row">
                     <span>Huéspedes (x<?php echo $cant_huespedes; ?>)</span>
-                    <span>Subtotal x Huésped</span>
                 </div>
                 <div class="price-row">
                     <span>Tarifa por servicio de WindBnB</span>

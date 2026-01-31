@@ -1,5 +1,5 @@
 
--> mas datos en el login para conectar con api de whastapp /veronika
+
 -> lo de los colores de los calendarios los va a hacer ANDRES
 
 
@@ -12,3 +12,4 @@ LISTO
 -> activar buscador / andrea
 -> al editar propiedad se elimina la imagen puesta anteriormente /veronika
 -> verificar inputs /veronika
+-> mas datos en el login para conectar con api de whastapp /veronika

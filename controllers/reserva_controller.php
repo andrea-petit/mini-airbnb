@@ -118,7 +118,8 @@ class ReservaController{
             $intervalo = $f1->diff($f2);
             $noches = $intervalo->days;
 
-            $precio_total = ($noches * $precio_noche) * $cant_huespedes;
+            $sub_precio_total = ($noches * $precio_noche);
+            $precio_total = $sub_precio_total + ($sub_precio_total*0.03);
 
             if(empty($fecha_inicio) || empty($fecha_fin) || $cant_huespedes <= 0){
                 header("Location: ../views/detalle_propiedad.php?id=$id_propiedad&error=campos_vacios");
